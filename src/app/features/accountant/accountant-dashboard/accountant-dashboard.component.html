@@ -1,0 +1,170 @@
+<app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
+        <div>
+          <h1 class="text-2xl font-semibold">Accountant - Bonus Reports</h1>
+          <p class="text-sm text-muted-foreground">Generate monthly bonus payment and audit reports</p>
+        </div>
+
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Select Period</ui-card-title>
+          </ui-card-header>
+          <ui-card-content>
+            <div class="grid grid-cols-3 gap-4 items-end">
+              <div class="space-y-2">
+                <ui-label>Year</ui-label>
+                <select class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" [value]="selectedYear()" (change)="selectedYear.set(($any($event.target)).value)">
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                </select>
+              </div>
+              <div class="space-y-2">
+                <ui-label>Month</ui-label>
+                <select class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" [value]="selectedMonth()" (change)="selectedMonth.set(($any($event.target)).value)">
+                  @for (m of months; track m.value) {
+                    <option [value]="m.value">{{ m.label }}</option>
+                  }
+                </select>
+              </div>
+              <ui-button size="lg" (click)="generate()">Generate Reports</ui-button>
+            </div>
+          </ui-card-content>
+        </ui-card>
+
+        @if (showData()) {
+          <div class="grid gap-4 md:grid-cols-3">
+            <ui-card>
+              <ui-card-header className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <ui-card-title className="text-sm font-medium">Total Bonus Payable</ui-card-title>
+              </ui-card-header>
+              <ui-card-content>
+                <div class="text-2xl font-semibold text-green-600">\${{ fmt(totalBonus()) }}</div>
+                <p class="text-xs text-muted-foreground mt-1">For {{ getMonthLabel() }} {{ selectedYear() }}</p>
+              </ui-card-content>
+            </ui-card>
+            <ui-card>
+              <ui-card-header className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <ui-card-title className="text-sm font-medium">Total Conversions</ui-card-title>
+              </ui-card-header>
+              <ui-card-content>
+                <div class="text-2xl font-semibold">{{ totalConversions() }}</div>
+                <p class="text-xs text-muted-foreground mt-1">Qualifying sales</p>
+              </ui-card-content>
+            </ui-card>
+            <ui-card>
+              <ui-card-header className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <ui-card-title className="text-sm font-medium">Total Sales Volume</ui-card-title>
+              </ui-card-header>
+              <ui-card-content>
+                <div class="text-2xl font-semibold">\${{ fmt(totalSales()) }}</div>
+                <p class="text-xs text-muted-foreground mt-1">Revenue generated</p>
+              </ui-card-content>
+            </ui-card>
+          </div>
+
+          <ui-card>
+            <ui-card-header>
+              <div class="flex justify-between items-center">
+                <div>
+                  <ui-card-title>Sheet 1: Bonus Payment Summary</ui-card-title>
+                  <p class="text-sm text-muted-foreground mt-1">Amount payable to each agent</p>
+                </div>
+                <ui-button variant="outline" (click)="exportCSV('summary')">Export CSV</ui-button>
+              </div>
+            </ui-card-header>
+            <ui-card-content>
+              <ui-table>
+                <ui-table-header>
+                  <ui-table-row>
+                    <ui-table-head>Agent</ui-table-head>
+                    <ui-table-head className="text-right">Conversions</ui-table-head>
+                    <ui-table-head className="text-right">Total Sales</ui-table-head>
+                    <ui-table-head className="text-right">Avg Sale</ui-table-head>
+                    <ui-table-head className="text-right">Total Bonus</ui-table-head>
+                  </ui-table-row>
+                </ui-table-header>
+                <ui-table-body>
+                  @for (agent of bonusSummary; track agent.agentCode) {
+                    <ui-table-row>
+                      <ui-table-cell>
+                        <div class="flex items-center gap-3">
+                          <ui-avatar [fallback]="initials(agent.agentName)" />
+                          <div>
+                            <p class="font-medium">{{ agent.agentName }}</p>
+                            <p class="text-sm text-muted-foreground">{{ agent.agentCode }}</p>
+                          </div>
+                        </div>
+                      </ui-table-cell>
+                      <ui-table-cell className="text-right font-medium">{{ agent.conversions }}</ui-table-cell>
+                      <ui-table-cell className="text-right font-medium">\${{ fmt(agent.totalSales) }}</ui-table-cell>
+                      <ui-table-cell className="text-right text-muted-foreground">\${{ fmt(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
+                      <ui-table-cell className="text-right font-semibold text-green-600">\${{ fmt(agent.totalBonus) }}</ui-table-cell>
+                    </ui-table-row>
+                  }
+                  <ui-table-row className="bg-gray-50 font-semibold">
+                    <ui-table-cell>TOTAL</ui-table-cell>
+                    <ui-table-cell className="text-right">{{ totalConversions() }}</ui-table-cell>
+                    <ui-table-cell className="text-right">\${{ fmt(totalSales()) }}</ui-table-cell>
+                    <ui-table-cell className="text-right">\${{ fmt(Math.round(totalSales() / totalConversions())) }}</ui-table-cell>
+                    <ui-table-cell className="text-right text-green-600">\${{ fmt(totalBonus()) }}</ui-table-cell>
+                  </ui-table-row>
+                </ui-table-body>
+              </ui-table>
+            </ui-card-content>
+          </ui-card>
+
+          <ui-card>
+            <ui-card-header>
+              <div class="flex justify-between items-center">
+                <div>
+                  <ui-card-title>Sheet 2: Detailed Audit Trail</ui-card-title>
+                  <p class="text-sm text-muted-foreground mt-1">Line-by-line breakdown showing how each bonus was calculated</p>
+                </div>
+                <ui-button variant="outline" (click)="exportCSV('details')">Export CSV</ui-button>
+              </div>
+            </ui-card-header>
+            <ui-card-content>
+              <div class="overflow-x-auto">
+                <ui-table>
+                  <ui-table-header>
+                    <ui-table-row>
+                      <ui-table-head>Agent</ui-table-head>
+                      <ui-table-head>Lead ID</ui-table-head>
+                      <ui-table-head>Customer</ui-table-head>
+                      <ui-table-head>Sale Date</ui-table-head>
+                      <ui-table-head className="text-right">Sale Amount</ui-table-head>
+                      <ui-table-head>Rule Applied</ui-table-head>
+                      <ui-table-head>Calculation</ui-table-head>
+                      <ui-table-head className="text-right">Bonus</ui-table-head>
+                    </ui-table-row>
+                  </ui-table-header>
+                  <ui-table-body>
+                    @for (d of bonusDetails; track d.id) {
+                      <ui-table-row>
+                        <ui-table-cell>
+                          <p class="font-medium text-sm">{{ d.agentName }}</p>
+                          <p class="text-xs text-muted-foreground">{{ d.agentCode }}</p>
+                        </ui-table-cell>
+                        <ui-table-cell className="font-mono text-sm">{{ d.leadId }}</ui-table-cell>
+                        <ui-table-cell>{{ d.customerName }}</ui-table-cell>
+                        <ui-table-cell className="text-sm text-muted-foreground">{{ d.saleDate }}</ui-table-cell>
+                        <ui-table-cell className="text-right font-medium">\${{ fmt(d.saleAmount) }}</ui-table-cell>
+                        <ui-table-cell>
+                          <p class="font-medium text-sm">{{ d.ruleName }}</p>
+                          <p class="text-xs text-muted-foreground">{{ d.ruleType }}</p>
+                        </ui-table-cell>
+                        <ui-table-cell>
+                          <ui-badge variant="outline" className="font-mono text-xs">{{ d.calculation }}</ui-badge>
+                        </ui-table-cell>
+                        <ui-table-cell className="text-right font-semibold text-green-600">\${{ fmt(d.bonusAmount) }}</ui-table-cell>
+                      </ui-table-row>
+                    }
+                  </ui-table-body>
+                </ui-table>
+              </div>
+            </ui-card-content>
+          </ui-card>
+        }
+      </div>
+    </app-page-layout>

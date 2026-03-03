@@ -1,0 +1,75 @@
+<app-page-layout>
+      <div class="mx-auto max-w-4xl space-y-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/admin')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            </ui-button>
+            <div>
+              <h1 class="text-2xl font-semibold">Region Management</h1>
+              <p class="text-sm text-muted-foreground">Manage regions for your organization</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Region Form -->
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Add New Region</ui-card-title>
+          </ui-card-header>
+          <ui-card-content>
+            <form [formGroup]="form" (ngSubmit)="addRegion()" class="flex items-end gap-4">
+              <div class="flex-1 space-y-2">
+                <ui-label>Region Name *</ui-label>
+                <input type="text"
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  formControlName="name" placeholder="e.g., Tashkent Region" />
+              </div>
+              <div class="w-40 space-y-2">
+                <ui-label>Code</ui-label>
+                <input type="text"
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  formControlName="code" placeholder="e.g., TASH" />
+              </div>
+              <ui-button type="submit" [disabled]="form.invalid">Add Region</ui-button>
+            </form>
+          </ui-card-content>
+        </ui-card>
+
+        <!-- Region List -->
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Regions ({{ regions().length }})</ui-card-title>
+          </ui-card-header>
+          <ui-card-content>
+            @if (regions().length === 0) {
+              <p class="text-sm text-muted-foreground text-center py-8">No regions yet. Add your first region above.</p>
+            } @else {
+              <div class="space-y-2">
+                @for (region of regions(); track region.id) {
+                  <div class="flex items-center justify-between p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors">
+                    <div class="flex items-center gap-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <div>
+                        <p class="font-medium text-sm">{{ region.name }}</p>
+                        @if (region.code) {
+                          <p class="text-xs text-muted-foreground">Code: {{ region.code }}</p>
+                        }
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span [class]="'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ' + (region.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')">
+                        {{ region.is_active ? 'Active' : 'Inactive' }}
+                      </span>
+                      <ui-button variant="ghost" size="icon" (click)="deleteRegion(region)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-red-600"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      </ui-button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </ui-card-content>
+        </ui-card>
+      </div>
+    </app-page-layout>

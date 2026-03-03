@@ -1,0 +1,111 @@
+<app-page-layout>
+      <app-page-header title="Supervisor Dashboard" subtitle="Monitor team performance and manage leads">
+        <button
+          class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 bg-primary text-primary-foreground shadow hover:bg-primary/90"
+          (click)="router.navigateByUrl('/supervisor/all-leads')"
+        >
+          All Leads
+        </button>
+        <button
+          class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+          (click)="router.navigateByUrl('/supervisor/person-info')"
+        >
+          My Profile
+        </button>
+      </app-page-header>
+
+      <!-- Metric Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        <app-analytics-card
+          title="Active Agents"
+          [value]="metrics().activeAgents.value"
+          [trend]="metrics().activeAgents.trend"
+          [icon]="true"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </app-analytics-card>
+
+        <app-analytics-card
+          title="Avg Leads/Agent"
+          [value]="metrics().avgLeadsPerAgent.value"
+          [trend]="metrics().avgLeadsPerAgent.trend"
+          [icon]="true"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </app-analytics-card>
+
+        <app-analytics-card
+          title="Avg Ticket"
+          [value]="metrics().avgTicket.value"
+          [trend]="metrics().avgTicket.trend"
+          [icon]="true"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </app-analytics-card>
+
+        <app-analytics-card
+          title="Conversion Rate"
+          [value]="metrics().conversionRate.value"
+          [trend]="metrics().conversionRate.trend"
+          [icon]="true"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </app-analytics-card>
+
+        <app-analytics-card
+          title="Total Revenue"
+          [value]="metrics().totalRevenue.value"
+          [trend]="metrics().totalRevenue.trend"
+          [icon]="true"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </app-analytics-card>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Performance Chart -->
+        <ui-card className="lg:col-span-2">
+          <ui-card-header>
+            <ui-card-title>Team Performance</ui-card-title>
+          </ui-card-header>
+          <ui-card-content>
+            @if (performanceChart()) {
+              <app-conversion-chart
+                [labels]="performanceChart()!.labels"
+                [datasets]="performanceChart()!.datasets"
+                chartType="bar"
+                height="320px"
+              />
+            }
+          </ui-card-content>
+        </ui-card>
+
+        <!-- Top Agents -->
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Top Agents</ui-card-title>
+          </ui-card-header>
+          <ui-card-content>
+            <div class="space-y-4">
+              @for (agent of topAgents(); track agent.code) {
+                <div class="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-bold">
+                      {{ $index + 1 }}
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium">{{ agent.name }}</p>
+                      <p class="text-xs text-muted-foreground">{{ agent.code }}</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-semibold">\${{ agent.revenue | number }}</p>
+                    <p class="text-xs text-muted-foreground">{{ agent.conversions }}/{{ agent.leads }} converted</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </ui-card-content>
+        </ui-card>
+      </div>
+    </app-page-layout>

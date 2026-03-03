@@ -1,0 +1,22 @@
+<div class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 w-full max-w-sm">
+      <div
+        *ngFor="let toast of toastService.toasts()"
+        [ngClass]="[
+          'pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md border p-4 shadow-lg transition-all',
+          toast.variant === 'destructive'
+            ? 'border-destructive bg-destructive text-destructive-foreground'
+            : 'border bg-background text-foreground'
+        ]"
+      >
+        <div class="grid gap-1">
+          <div class="text-sm font-semibold">{{ toast.title }}</div>
+          <div *ngIf="toast.description" class="text-sm opacity-90">{{ toast.description }}</div>
+        </div>
+        <button
+          class="rounded-md p-1 opacity-70 hover:opacity-100"
+          (click)="toastService.dismiss(toast.id)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>

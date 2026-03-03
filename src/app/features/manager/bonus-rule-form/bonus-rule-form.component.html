@@ -1,0 +1,174 @@
+<app-page-layout>
+      <div class="mx-auto max-w-4xl space-y-6">
+        <!-- Header -->
+        <div class="flex items-center gap-4">
+          <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/bonus-management/rules')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </ui-button>
+          <div>
+            <h1 class="text-2xl font-semibold">{{ isEditMode ? 'Edit Bonus Rule' : 'Create Bonus Rule' }}</h1>
+            <p class="text-sm text-muted-foreground">Configure bonus calculation criteria</p>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <ui-card>
+            <ui-card-header>
+              <ui-card-title>Rule Configuration</ui-card-title>
+            </ui-card-header>
+            <ui-card-content className="space-y-6">
+              <!-- Basic Info -->
+              <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2 space-y-2">
+                  <ui-label>Rule Name</ui-label>
+                  <input
+                    type="text"
+                    class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    formControlName="name"
+                    placeholder="e.g., High Value Sale Bonus"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <ui-label>Priority (lower = higher priority)</ui-label>
+                  <input
+                    type="number"
+                    class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    formControlName="priority"
+                    min="1"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <ui-label>Active Status</ui-label>
+                  <div class="flex items-center space-x-2 pt-2">
+                    <ui-switch [checked]="form.get('isActive')?.value" (checkedChange)="form.get('isActive')?.setValue($event)" />
+                    <span class="text-sm">{{ form.get('isActive')?.value ? 'Active' : 'Inactive' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule Dimension -->
+              <div class="space-y-2">
+                <ui-label>Rule Dimension</ui-label>
+                <select
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  formControlName="dimension"
+                >
+                  <option value="SELL_AMOUNT">Sale Amount</option>
+                  <option value="POTENTIAL_PRODUCT">Product</option>
+                  <option value="LEAD_TIME">Lead Time</option>
+                  <option value="SELL_TIME">Sell Time</option>
+                  <option value="USER_REG_TIME">User Registration Time</option>
+                  <option value="LEAD_TO_SELL_DELTA">Lead to Sale Duration</option>
+                </select>
+              </div>
+
+              <!-- Operator -->
+              <div class="space-y-2">
+                <ui-label>Operator</ui-label>
+                <select
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  formControlName="operator"
+                >
+                  <option value="EQ">Equals</option>
+                  <option value="NEQ">Not Equals</option>
+                  <option value="GT">Greater Than</option>
+                  <option value="GTE">Greater Than or Equal</option>
+                  <option value="LT">Less Than</option>
+                  <option value="LTE">Less Than or Equal</option>
+                  <option value="BETWEEN">Between</option>
+                  <option value="IN">In List</option>
+                  <option value="NOT_IN">Not In List</option>
+                </select>
+              </div>
+
+              <!-- Condition Value -->
+              <div class="space-y-2">
+                <ui-label>Condition Value</ui-label>
+                <input
+                  type="text"
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  formControlName="conditionValue"
+                  placeholder="e.g., 5000 or Premium, Elite"
+                />
+              </div>
+
+              <!-- Payout Configuration -->
+              <div class="border-t pt-6">
+                <h3 class="font-semibold mb-4">Payout Configuration</h3>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <ui-label>Payout Type</ui-label>
+                    <select
+                      class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                      formControlName="payoutType"
+                    >
+                      <option value="fixed">Fixed Amount</option>
+                      <option value="percent">Percent of Sale</option>
+                    </select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <ui-label>{{ form.get('payoutType')?.value === 'fixed' ? 'Amount ($)' : 'Percentage (%)' }}</ui-label>
+                    <input
+                      type="number"
+                      class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      formControlName="payoutValue"
+                      step="0.01"
+                    />
+                  </div>
+
+                  @if (form.get('payoutType')?.value === 'percent') {
+                    <div class="space-y-2 col-span-2">
+                      <ui-label>Cap Amount (optional)</ui-label>
+                      <input
+                        type="number"
+                        class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        formControlName="capAmount"
+                        step="0.01"
+                        placeholder="e.g., 1000"
+                      />
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Effective Dates -->
+              <div class="border-t pt-6">
+                <h3 class="font-semibold mb-4">Effective Period</h3>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <ui-label>Effective From</ui-label>
+                    <input
+                      type="date"
+                      class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      formControlName="effectiveFrom"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <ui-label>Effective To (optional)</ui-label>
+                    <input
+                      type="date"
+                      class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      formControlName="effectiveTo"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex justify-end gap-2 pt-4">
+                <ui-button type="button" variant="outline" (click)="router.navigateByUrl('/manager/bonus-management/rules')">
+                  Cancel
+                </ui-button>
+                <ui-button type="submit">
+                  {{ isEditMode ? 'Update Rule' : 'Create Rule' }}
+                </ui-button>
+              </div>
+            </ui-card-content>
+          </ui-card>
+        </form>
+      </div>
+    </app-page-layout>

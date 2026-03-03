@@ -1,0 +1,9 @@
+<select
+      [ngClass]="computedClasses"
+      [disabled]="isDisabled"
+      [value]="currentValue"
+      (change)="onSelect($event)"
+      (blur)="onTouched()"
+    >
+      <ng-content />
+    </select>

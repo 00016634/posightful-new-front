@@ -1,0 +1,9 @@
+<input
+      [ngClass]="computedClasses"
+      [type]="type"
+      [placeholder]="placeholder"
+      [disabled]="isDisabled"
+      [value]="value"
+      (input)="onInput($event)"
+      (blur)="onTouched()"
+    />

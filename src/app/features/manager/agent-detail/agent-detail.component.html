@@ -1,0 +1,187 @@
+<app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
+        <!-- Header -->
+        <div class="flex items-center gap-4">
+          <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/all-agents')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </ui-button>
+          <div>
+            <h1 class="text-2xl font-semibold">{{ isSupervisor ? 'Supervisor' : 'Agent' }} Details</h1>
+            <p class="text-sm text-muted-foreground">Detailed performance and information</p>
+          </div>
+        </div>
+
+        <!-- Profile Card -->
+        <ui-card>
+          <ui-card-content className="pt-6">
+            <div class="flex flex-col md:flex-row gap-6">
+              <ui-avatar [fallback]="getInitials(agent().fullName)" size="lg" className="h-24 w-24 text-2xl" />
+              <div class="flex-1">
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <h2 class="text-2xl font-semibold">{{ agent().fullName }}</h2>
+                    <div class="flex items-center gap-2 mt-1">
+                      <ui-badge variant="secondary">{{ agent().agentCode }}</ui-badge>
+                      <ui-badge>{{ agent().role }}</ui-badge>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <span>{{ agent().phone }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>{{ agent().region }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                    <span>Hired: {{ agent().hireDate }}</span>
+                  </div>
+                  @if (agent().supervisor) {
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                      <span>{{ agent().supervisor }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </ui-card-content>
+        </ui-card>
+
+        <!-- Stats Grid -->
+        <div class="grid gap-4 md:grid-cols-4">
+          <ui-card>
+            <ui-card-header className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <ui-card-title className="text-sm font-medium">Total Leads</ui-card-title>
+            </ui-card-header>
+            <ui-card-content>
+              <div class="text-2xl font-semibold">{{ stats().totalLeads }}</div>
+              <p class="text-xs text-muted-foreground mt-1">{{ stats().pendingLeads }} pending</p>
+            </ui-card-content>
+          </ui-card>
+
+          <ui-card>
+            <ui-card-header className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <ui-card-title className="text-sm font-medium">Conversions</ui-card-title>
+            </ui-card-header>
+            <ui-card-content>
+              <div class="text-2xl font-semibold text-green-600">{{ stats().conversions }}</div>
+              <p class="text-xs text-muted-foreground mt-1">{{ stats().conversionRate }}% rate</p>
+            </ui-card-content>
+          </ui-card>
+
+          <ui-card>
+            <ui-card-header className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <ui-card-title className="text-sm font-medium">Total Revenue</ui-card-title>
+            </ui-card-header>
+            <ui-card-content>
+              <div class="text-2xl font-semibold">\${{ formatNumber(stats().totalRevenue) }}</div>
+              <p class="text-xs text-muted-foreground mt-1">Avg: \${{ stats().avgTicket }}</p>
+            </ui-card-content>
+          </ui-card>
+
+          <ui-card>
+            <ui-card-header className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <ui-card-title className="text-sm font-medium">Bonus Earned</ui-card-title>
+            </ui-card-header>
+            <ui-card-content>
+              <div class="text-2xl font-semibold text-orange-600">\${{ formatNumber(stats().bonusEarned) }}</div>
+              <p class="text-xs text-muted-foreground mt-1">This month</p>
+            </ui-card-content>
+          </ui-card>
+        </div>
+
+        <!-- Performance Chart -->
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Performance Trend</ui-card-title>
+          </ui-card-header>
+          <ui-card-content>
+            <app-conversion-chart
+              [labels]="perfLabels"
+              [datasets]="perfDatasets"
+              chartType="line"
+              height="300px"
+            />
+          </ui-card-content>
+        </ui-card>
+
+        <!-- Recent Leads (for agents) or Attached Agents (for supervisors) -->
+        @if (isSupervisor) {
+          <ui-card>
+            <ui-card-header>
+              <ui-card-title>Attached Agents</ui-card-title>
+            </ui-card-header>
+            <ui-card-content>
+              <ui-table>
+                <ui-table-header>
+                  <ui-table-row>
+                    <ui-table-head>Agent</ui-table-head>
+                    <ui-table-head className="text-right">Leads</ui-table-head>
+                    <ui-table-head className="text-right">Conversions</ui-table-head>
+                    <ui-table-head className="text-right">Conv. Rate</ui-table-head>
+                    <ui-table-head className="text-right">Revenue</ui-table-head>
+                  </ui-table-row>
+                </ui-table-header>
+                <ui-table-body>
+                  @for (a of attachedAgents; track a.agentCode) {
+                    <ui-table-row>
+                      <ui-table-cell>
+                        <div class="flex items-center gap-3">
+                          <ui-avatar [fallback]="getInitials(a.fullName)" />
+                          <div>
+                            <p class="font-medium">{{ a.fullName }}</p>
+                            <p class="text-sm text-muted-foreground">{{ a.agentCode }}</p>
+                          </div>
+                        </div>
+                      </ui-table-cell>
+                      <ui-table-cell className="text-right font-medium">{{ a.leads }}</ui-table-cell>
+                      <ui-table-cell className="text-right font-medium text-green-600">{{ a.conversions }}</ui-table-cell>
+                      <ui-table-cell className="text-right">{{ a.conversionRate }}%</ui-table-cell>
+                      <ui-table-cell className="text-right font-medium">\${{ formatNumber(a.revenue) }}</ui-table-cell>
+                    </ui-table-row>
+                  }
+                </ui-table-body>
+              </ui-table>
+            </ui-card-content>
+          </ui-card>
+        } @else {
+          <ui-card>
+            <ui-card-header>
+              <ui-card-title>Recent Leads</ui-card-title>
+            </ui-card-header>
+            <ui-card-content>
+              <ui-table>
+                <ui-table-header>
+                  <ui-table-row>
+                    <ui-table-head>Lead ID</ui-table-head>
+                    <ui-table-head>Customer</ui-table-head>
+                    <ui-table-head>Status</ui-table-head>
+                    <ui-table-head>Amount</ui-table-head>
+                    <ui-table-head>Date</ui-table-head>
+                  </ui-table-row>
+                </ui-table-header>
+                <ui-table-body>
+                  @for (lead of recentLeads; track lead.id) {
+                    <ui-table-row>
+                      <ui-table-cell className="font-medium">{{ lead.id }}</ui-table-cell>
+                      <ui-table-cell>{{ lead.customer }}</ui-table-cell>
+                      <ui-table-cell>
+                        <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + getStatusColor(lead.status)">
+                          {{ lead.status }}
+                        </span>
+                      </ui-table-cell>
+                      <ui-table-cell>{{ lead.amount ? '$' + formatNumber(lead.amount) : '—' }}</ui-table-cell>
+                      <ui-table-cell className="text-sm text-muted-foreground">{{ lead.date }}</ui-table-cell>
+                    </ui-table-row>
+                  }
+                </ui-table-body>
+              </ui-table>
+            </ui-card-content>
+          </ui-card>
+        }
+      </div>
+    </app-page-layout>

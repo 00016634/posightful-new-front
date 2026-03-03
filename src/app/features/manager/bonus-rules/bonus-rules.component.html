@@ -1,0 +1,89 @@
+<app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/bonus-management')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            </ui-button>
+            <div>
+              <h1 class="text-2xl font-semibold">Bonus Rules</h1>
+              <p class="text-sm text-muted-foreground">Configure bonus calculation rules</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <ui-button variant="outline" (click)="router.navigateByUrl('/manager/bonus-management/attribution-window')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Attribution Window
+            </ui-button>
+            <ui-button (click)="router.navigateByUrl('/manager/bonus-management/rules/new')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              Add Rule
+            </ui-button>
+          </div>
+        </div>
+
+        <!-- Rules Table -->
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Active & Inactive Rules</ui-card-title>
+          </ui-card-header>
+          <ui-card-content>
+            <ui-table>
+              <ui-table-header>
+                <ui-table-row>
+                  <ui-table-head>Rule Name</ui-table-head>
+                  <ui-table-head>Dimension</ui-table-head>
+                  <ui-table-head>Condition</ui-table-head>
+                  <ui-table-head>Payout</ui-table-head>
+                  <ui-table-head>Priority</ui-table-head>
+                  <ui-table-head>Status</ui-table-head>
+                  <ui-table-head className="text-right">Actions</ui-table-head>
+                </ui-table-row>
+              </ui-table-header>
+              <ui-table-body>
+                @for (rule of rules(); track rule.id) {
+                  <ui-table-row>
+                    <ui-table-cell>
+                      <p class="font-medium">{{ rule.name }}</p>
+                    </ui-table-cell>
+                    <ui-table-cell>
+                      <ui-badge variant="outline">{{ rule.dimension }}</ui-badge>
+                    </ui-table-cell>
+                    <ui-table-cell className="text-sm">
+                      <span class="font-medium">{{ rule.operator }}</span>
+                      <span class="text-muted-foreground ml-1">{{ rule.value }}</span>
+                    </ui-table-cell>
+                    <ui-table-cell className="font-medium text-green-600">{{ rule.payoutValue }}</ui-table-cell>
+                    <ui-table-cell>{{ rule.priority }}</ui-table-cell>
+                    <ui-table-cell>
+                      <button (click)="toggleActive(rule.id)">
+                        <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + (rule.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')">
+                          {{ rule.isActive ? 'Active' : 'Inactive' }}
+                        </span>
+                      </button>
+                    </ui-table-cell>
+                    <ui-table-cell className="text-right">
+                      <div class="flex justify-end gap-2">
+                        <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/bonus-management/rules/' + rule.id)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                        </ui-button>
+                        <ui-button variant="ghost" size="icon" (click)="deleteRule(rule.id)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        </ui-button>
+                      </div>
+                    </ui-table-cell>
+                  </ui-table-row>
+                } @empty {
+                  <ui-table-row>
+                    <ui-table-cell className="text-center py-8 text-muted-foreground" colSpan="7">
+                      No rules configured
+                    </ui-table-cell>
+                  </ui-table-row>
+                }
+              </ui-table-body>
+            </ui-table>
+          </ui-card-content>
+        </ui-card>
+      </div>
+    </app-page-layout>

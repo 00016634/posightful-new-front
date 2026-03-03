@@ -1,0 +1,100 @@
+<app-page-layout>
+      <app-page-header
+        title="Agent Dashboard"
+        subtitle="Welcome back! Here's your performance overview.">
+        <ui-button (click)="navigateTo('/agent/create-lead')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+            <path d="M5 12h14"/><path d="M12 5v14"/>
+          </svg>
+          Create Lead
+        </ui-button>
+        <ui-button variant="outline" (click)="navigateTo('/agent/person-info')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          My Profile
+        </ui-button>
+      </app-page-header>
+
+      <!-- Filters -->
+      <div class="mb-6">
+        <app-dashboard-filters
+          [timeRange]="timeRange()"
+          (timeRangeChange)="timeRange.set($event)">
+        </app-dashboard-filters>
+      </div>
+
+      <!-- Analytics Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <app-analytics-card
+          title="Leads by Day"
+          [value]="metrics().leadsByDay.value.toString()"
+          [trend]="metrics().leadsByDay.trend"
+          [trendUp]="true"
+          [icon]="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </app-analytics-card>
+
+        <app-analytics-card
+          title="Leads Converted"
+          [value]="metrics().leadsConverted.value.toString()"
+          [trend]="metrics().leadsConverted.trend"
+          [trendUp]="true"
+          [icon]="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+        </app-analytics-card>
+
+        <app-analytics-card
+          title="Sales by Day"
+          [value]="metrics().salesByDay.value.toString()"
+          [trend]="metrics().salesByDay.trend"
+          [trendUp]="true"
+          [icon]="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </app-analytics-card>
+
+        <app-analytics-card
+          title="Pending Leads"
+          [value]="metrics().pendingLeads.value.toString()"
+          [trend]="metrics().pendingLeads.trend"
+          [trendUp]="false"
+          [icon]="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </app-analytics-card>
+      </div>
+
+      <!-- Chart & Bonuses -->
+      <div class="grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+          <ui-card>
+            <ui-card-header>
+              <ui-card-title>Conversion Trends</ui-card-title>
+            </ui-card-header>
+            <ui-card-content>
+              <app-conversion-chart
+                [labels]="chartData().labels"
+                [datasets]="chartData().datasets"
+                height="320px"
+                chartType="area">
+              </app-conversion-chart>
+            </ui-card-content>
+          </ui-card>
+        </div>
+        <div class="lg:col-span-1">
+          <app-bonuses-card
+            title="My Bonuses"
+            totalEarned="$1,155"
+            pending="$360"
+            paid="$795">
+          </app-bonuses-card>
+        </div>
+      </div>
+    </app-page-layout>

@@ -1,0 +1,16 @@
+<ui-card [className]="className">
+      <ui-card-content className="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-muted-foreground">{{ title }}</p>
+            <div class="text-2xl font-bold mt-1">{{ value }}</div>
+            <p *ngIf="trend" [ngClass]="['text-xs mt-1', trendUp ? 'text-green-600' : 'text-red-600']">
+              {{ trend }}
+            </p>
+          </div>
+          <div *ngIf="icon" class="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+            <ng-content />
+          </div>
+        </div>
+      </ui-card-content>
+    </ui-card>

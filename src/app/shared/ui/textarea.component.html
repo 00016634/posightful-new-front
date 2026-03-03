@@ -1,0 +1,9 @@
+<textarea
+      [ngClass]="computedClasses"
+      [placeholder]="placeholder"
+      [disabled]="isDisabled"
+      [rows]="rows"
+      [value]="value"
+      (input)="onInput($event)"
+      (blur)="onTouched()"
+    ></textarea>

@@ -1,0 +1,145 @@
+<app-page-layout>
+      <div class="mx-auto max-w-4xl space-y-6">
+        <!-- Header -->
+        <div class="flex items-center gap-4">
+          <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/bonus-management/rules')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </ui-button>
+          <div>
+            <h1 class="text-2xl font-semibold">Attribution Window Settings</h1>
+            <p class="text-sm text-muted-foreground">Configure commission attribution policy</p>
+          </div>
+        </div>
+
+        <!-- Info Card -->
+        <ui-card className="border-blue-200 bg-blue-50">
+          <ui-card-content className="pt-6">
+            <div class="flex gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <div class="text-sm text-blue-900">
+                <p class="font-medium mb-1">About Attribution Window</p>
+                <p>
+                  The attribution window defines how long after a lead is created an agent can receive
+                  commission for a conversion. For example, with a 30-day window, if a lead converts
+                  within 30 days of creation, the original agent receives credit.
+                </p>
+              </div>
+            </div>
+          </ui-card-content>
+        </ui-card>
+
+        <!-- Settings Form -->
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <ui-card>
+            <ui-card-header>
+              <ui-card-title>Policy Configuration</ui-card-title>
+            </ui-card-header>
+            <ui-card-content className="space-y-6">
+              <!-- Policy Name -->
+              <div class="space-y-2">
+                <ui-label>Policy Name</ui-label>
+                <input
+                  type="text"
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  formControlName="name"
+                />
+              </div>
+
+              <!-- Attribution Mode -->
+              <div class="space-y-2">
+                <ui-label>Attribution Mode</ui-label>
+                <select
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  formControlName="mode"
+                >
+                  <option value="FIRST_TOUCH">First Touch (First agent who created the lead)</option>
+                  <option value="LAST_TOUCH">Last Touch (Agent who closed the deal)</option>
+                  <option value="LINEAR">Linear (Equal credit to all agents involved)</option>
+                  <option value="TIME_DECAY">Time Decay (More credit to recent interactions)</option>
+                </select>
+                <p class="text-xs text-muted-foreground">
+                  @switch (form.get('mode')?.value) {
+                    @case ('FIRST_TOUCH') { Credit goes to the agent who created the lead }
+                    @case ('LAST_TOUCH') { Credit goes to the agent who closed the sale }
+                    @case ('LINEAR') { Credit is split equally among all agents involved }
+                    @case ('TIME_DECAY') { Recent interactions receive more credit }
+                  }
+                </p>
+              </div>
+
+              <!-- Attribution Window -->
+              <div class="space-y-2">
+                <ui-label>Attribution Window</ui-label>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <ui-label>Duration</ui-label>
+                    <input
+                      type="number"
+                      class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      formControlName="windowValue"
+                      min="1"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <ui-label>Unit</ui-label>
+                    <select
+                      class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                      formControlName="windowUnit"
+                    >
+                      <option value="hours">Hours</option>
+                      <option value="days">Days</option>
+                      <option value="weeks">Weeks</option>
+                      <option value="months">Months</option>
+                    </select>
+                  </div>
+                </div>
+                <p class="text-sm text-muted-foreground">
+                  Current window: <span class="font-medium">{{ form.get('windowValue')?.value }} {{ form.get('windowUnit')?.value }}</span>
+                </p>
+              </div>
+
+              <!-- Effective Date -->
+              <div class="space-y-2">
+                <ui-label>Effective From</ui-label>
+                <input
+                  type="date"
+                  class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  formControlName="effectiveFrom"
+                />
+              </div>
+
+              <!-- Summary -->
+              <div class="border-t pt-6">
+                <h3 class="font-semibold mb-3">Current Policy Summary</h3>
+                <div class="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Policy Name:</span>
+                    <span class="font-medium">{{ form.get('name')?.value }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Attribution Mode:</span>
+                    <span class="font-medium">{{ form.get('mode')?.value?.replace('_', ' ') }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Window:</span>
+                    <span class="font-medium">{{ form.get('windowValue')?.value }} {{ form.get('windowUnit')?.value }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Status:</span>
+                    <span class="font-medium text-green-600">Active</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex justify-end gap-2 pt-4">
+                <ui-button type="button" variant="outline" (click)="router.navigateByUrl('/manager/bonus-management/rules')">
+                  Cancel
+                </ui-button>
+                <ui-button type="submit">Save Changes</ui-button>
+              </div>
+            </ui-card-content>
+          </ui-card>
+        </form>
+      </div>
+    </app-page-layout>

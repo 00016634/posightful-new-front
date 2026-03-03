@@ -1,0 +1,190 @@
+<app-page-layout>
+      <app-page-header title="All Leads" subtitle="View and manage all team leads" backRoute="/supervisor">
+      </app-page-header>
+
+      <!-- Filters -->
+      <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div class="flex-1">
+          <input
+            type="text"
+            placeholder="Search by name, phone, or ID..."
+            class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            [value]="searchTerm()"
+            (input)="searchTerm.set(asInputValue($event))"
+          />
+        </div>
+        <div class="w-full md:w-48">
+          <ui-select [value]="agentFilter()" (change)="agentFilter.set(asSelectValue($event))">
+            <option value="">All Agents</option>
+            @for (agent of uniqueAgents(); track agent) {
+              <option [value]="agent">{{ agent }}</option>
+            }
+          </ui-select>
+        </div>
+        <div class="w-full md:w-48">
+          <ui-select [value]="statusFilter()" (change)="statusFilter.set(asSelectValue($event))">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="converted">Converted</option>
+            <option value="lost">Lost</option>
+          </ui-select>
+        </div>
+      </div>
+
+      <!-- Leads Table -->
+      <ui-card class="rounded-xl border bg-card text-card-foreground shadow">
+        <div class="relative w-full overflow-auto">
+          <ui-table>
+            <ui-table-header>
+              <ui-table-row>
+                <ui-table-head>ID</ui-table-head>
+                <ui-table-head>Agent</ui-table-head>
+                <ui-table-head>Customer</ui-table-head>
+                <ui-table-head>Phone</ui-table-head>
+                <ui-table-head>Type</ui-table-head>
+                <ui-table-head>Status</ui-table-head>
+                <ui-table-head>Created</ui-table-head>
+                <ui-table-head>Actions</ui-table-head>
+              </ui-table-row>
+            </ui-table-header>
+            <ui-table-body>
+              @for (lead of filteredLeads(); track lead.id) {
+                <ui-table-row>
+                  <ui-table-cell className="font-medium">{{ lead.id }}</ui-table-cell>
+                  <ui-table-cell>
+                    <div>
+                      <p class="text-sm font-medium">{{ lead.agentName }}</p>
+                      <p class="text-xs text-muted-foreground">{{ lead.agentCode }}</p>
+                    </div>
+                  </ui-table-cell>
+                  <ui-table-cell>{{ lead.customerName }}</ui-table-cell>
+                  <ui-table-cell>{{ lead.customerPhone }}</ui-table-cell>
+                  <ui-table-cell>{{ lead.interactionType }}</ui-table-cell>
+                  <ui-table-cell>
+                    <span
+                      [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + getStatusClasses(lead.status)"
+                    >
+                      {{ lead.status | titlecase }}
+                    </span>
+                  </ui-table-cell>
+                  <ui-table-cell>{{ lead.createdDate }}</ui-table-cell>
+                  <ui-table-cell>
+                    <div class="flex items-center gap-2">
+                      <button
+                        class="inline-flex items-center justify-center rounded-md text-sm font-medium h-8 px-3 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+                        (click)="viewLead(lead)"
+                      >
+                        View
+                      </button>
+                      <button
+                        class="inline-flex items-center justify-center rounded-md text-sm font-medium h-8 px-3 bg-primary text-primary-foreground shadow hover:bg-primary/90"
+                        (click)="openEditDialog(lead)"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </ui-table-cell>
+                </ui-table-row>
+              } @empty {
+                <ui-table-row>
+                  <ui-table-cell className="text-center py-8 text-muted-foreground" colSpan="8">
+                    No leads found matching your criteria.
+                  </ui-table-cell>
+                </ui-table-row>
+              }
+            </ui-table-body>
+          </ui-table>
+        </div>
+      </ui-card>
+
+      <!-- View Dialog -->
+      <ui-dialog [open]="viewDialogOpen()" (openChange)="viewDialogOpen.set($event)">
+        <ui-dialog-header>
+          <ui-dialog-title>Lead Details</ui-dialog-title>
+        </ui-dialog-header>
+        @if (selectedLead()) {
+          <div class="grid gap-3 py-4">
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <span class="text-muted-foreground">ID:</span>
+              <span class="font-medium">{{ selectedLead()!.id }}</span>
+              <span class="text-muted-foreground">Agent:</span>
+              <span class="font-medium">{{ selectedLead()!.agentName }}</span>
+              <span class="text-muted-foreground">Customer:</span>
+              <span class="font-medium">{{ selectedLead()!.customerName }}</span>
+              <span class="text-muted-foreground">Phone:</span>
+              <span class="font-medium">{{ selectedLead()!.customerPhone }}</span>
+              <span class="text-muted-foreground">Type:</span>
+              <span class="font-medium">{{ selectedLead()!.interactionType }}</span>
+              <span class="text-muted-foreground">Status:</span>
+              <span class="font-medium">{{ selectedLead()!.status | titlecase }}</span>
+              <span class="text-muted-foreground">Created:</span>
+              <span class="font-medium">{{ selectedLead()!.createdDate }}</span>
+              <span class="text-muted-foreground">Notes:</span>
+              <span class="font-medium">{{ selectedLead()!.notes }}</span>
+            </div>
+          </div>
+        }
+      </ui-dialog>
+
+      <!-- Edit Dialog -->
+      <ui-dialog [open]="editDialogOpen()" (openChange)="editDialogOpen.set($event)">
+        <ui-dialog-header>
+          <ui-dialog-title>Edit Lead</ui-dialog-title>
+        </ui-dialog-header>
+        <div class="grid gap-4 py-4">
+          <div class="grid gap-2">
+            <ui-label>Customer Name</ui-label>
+            <input
+              type="text"
+              class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              [value]="editForm().customerName"
+              (input)="updateEditForm('customerName', asInputValue($event))"
+            />
+          </div>
+          <div class="grid gap-2">
+            <ui-label>Phone</ui-label>
+            <input
+              type="text"
+              class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              [value]="editForm().customerPhone"
+              (input)="updateEditForm('customerPhone', asInputValue($event))"
+            />
+          </div>
+          <div class="grid gap-2">
+            <ui-label>Status</ui-label>
+            <select
+              class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              [value]="editForm().status"
+              (change)="updateEditForm('status', asSelectValue($event))"
+            >
+              <option value="pending">Pending</option>
+              <option value="converted">Converted</option>
+              <option value="lost">Lost</option>
+            </select>
+          </div>
+          <div class="grid gap-2">
+            <ui-label>Notes</ui-label>
+            <textarea
+              class="flex min-h-[60px] w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              rows="3"
+              [value]="editForm().notes"
+              (input)="updateEditForm('notes', asTextareaValue($event))"
+            ></textarea>
+          </div>
+        </div>
+        <ui-dialog-footer>
+          <button
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 px-4 py-2 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+            (click)="editDialogOpen.set(false)"
+          >
+            Cancel
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 px-4 py-2 bg-primary text-primary-foreground shadow hover:bg-primary/90"
+            (click)="saveLead()"
+          >
+            Save Changes
+          </button>
+        </ui-dialog-footer>
+      </ui-dialog>
+    </app-page-layout>

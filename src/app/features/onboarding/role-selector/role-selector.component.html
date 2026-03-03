@@ -1,0 +1,54 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div class="w-full max-w-7xl">
+        <div class="text-center mb-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-2">POSightful</h1>
+          <p class="text-lg text-gray-600">Select your role to continue</p>
+          <button class="mt-2 text-primary underline-offset-4 hover:underline text-sm" (click)="navigate('/purchase')">
+            Don't have an account? Get Started &rarr;
+          </button>
+        </div>
+
+        @if (loading) {
+          <div class="flex justify-center py-20">
+            <div class="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"></div>
+          </div>
+        } @else if (error) {
+          <div class="text-center py-20">
+            <p class="text-red-600 mb-4">{{ error }}</p>
+            <ui-button (click)="loadRoles()">Retry</ui-button>
+          </div>
+        } @else {
+          <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+            @for (role of roleCards; track role.code) {
+              <ui-card [className]="role.cardClass">
+                <ui-card-header className="text-center">
+                  <div class="flex justify-center mb-4">
+                    <div [class]="role.iconBgClass">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" [attr.stroke]="role.hex" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path [attr.d]="role.iconPath" />
+                        @if (role.iconPath2) { <path [attr.d]="role.iconPath2" /> }
+                      </svg>
+                    </div>
+                  </div>
+                  <ui-card-title className="text-2xl">{{ role.name }}</ui-card-title>
+                  <ui-card-description>{{ role.description }}</ui-card-description>
+                </ui-card-header>
+                <ui-card-content>
+                  <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                    @for (feature of role.features; track feature) {
+                      <li class="flex items-center gap-2">
+                        <span [class]="role.dotClass"></span>
+                        {{ feature }}
+                      </li>
+                    }
+                  </ul>
+                  <ui-button [className]="'w-full ' + role.btnClass" size="lg" (click)="navigate(role.path)">
+                    Continue as {{ role.name }}
+                  </ui-button>
+                </ui-card-content>
+              </ui-card>
+            }
+          </div>
+        }
+      </div>
+    </div>

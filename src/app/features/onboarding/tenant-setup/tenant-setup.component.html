@@ -1,0 +1,161 @@
+<app-page-layout>
+      <app-page-header
+        title="Setup Your Organization"
+        subtitle="Complete the setup to start using POSightful">
+      </app-page-header>
+
+      <div class="max-w-2xl mx-auto">
+        <!-- Progress indicator -->
+        <div class="mb-8">
+          <div class="flex justify-between text-sm mb-2">
+            <span [class]="currentStep() >= 1 ? 'text-primary font-medium' : 'text-muted-foreground'">
+              Step 1: Company Info
+            </span>
+            <span [class]="currentStep() >= 2 ? 'text-primary font-medium' : 'text-muted-foreground'">
+              Step 2: Admin Account
+            </span>
+          </div>
+          <ui-progress [value]="progressValue()"></ui-progress>
+        </div>
+
+        <!-- Step 1: Company Information -->
+        @if (currentStep() === 1) {
+          <ui-card>
+            <ui-card-header>
+              <ui-card-title>Company Information</ui-card-title>
+              <ui-card-description>Tell us about your organization</ui-card-description>
+            </ui-card-header>
+            <ui-card-content>
+              <form [formGroup]="companyForm" class="space-y-6">
+                <div class="space-y-2">
+                  <ui-label htmlFor="companyName">Company Name</ui-label>
+                  <ui-input
+                    formControlName="companyName"
+                    placeholder="Acme Corporation">
+                  </ui-input>
+                  @if (companyForm.get('companyName')?.invalid && companyForm.get('companyName')?.touched) {
+                    <p class="text-sm text-red-600">Company name is required</p>
+                  }
+                </div>
+
+                <div class="space-y-2">
+                  <ui-label htmlFor="companySize">Company Size</ui-label>
+                  <ui-select formControlName="companySize">
+                    <option value="" disabled>Select company size</option>
+                    @for (size of companySizes; track size) {
+                      <option [value]="size">{{ size }} employees</option>
+                    }
+                  </ui-select>
+                  @if (companyForm.get('companySize')?.invalid && companyForm.get('companySize')?.touched) {
+                    <p class="text-sm text-red-600">Please select a company size</p>
+                  }
+                </div>
+
+                <div class="space-y-2">
+                  <ui-label htmlFor="industry">Industry</ui-label>
+                  <ui-select formControlName="industry">
+                    <option value="" disabled>Select industry</option>
+                    @for (ind of industries; track ind) {
+                      <option [value]="ind">{{ ind }}</option>
+                    }
+                  </ui-select>
+                  @if (companyForm.get('industry')?.invalid && companyForm.get('industry')?.touched) {
+                    <p class="text-sm text-red-600">Please select an industry</p>
+                  }
+                </div>
+              </form>
+            </ui-card-content>
+            <ui-card-footer className="justify-end">
+              <ui-button
+                size="lg"
+                [disabled]="companyForm.invalid"
+                (click)="nextStep()">
+                Next Step
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                </svg>
+              </ui-button>
+            </ui-card-footer>
+          </ui-card>
+        }
+
+        <!-- Step 2: Admin Account -->
+        @if (currentStep() === 2) {
+          <ui-card>
+            <ui-card-header>
+              <ui-card-title>Admin Account</ui-card-title>
+              <ui-card-description>Create the administrator account for your organization</ui-card-description>
+            </ui-card-header>
+            <ui-card-content>
+              <form [formGroup]="adminForm" class="space-y-6">
+                <div class="space-y-2">
+                  <ui-label htmlFor="adminName">Full Name</ui-label>
+                  <ui-input
+                    formControlName="adminName"
+                    placeholder="John Doe">
+                  </ui-input>
+                  @if (adminForm.get('adminName')?.invalid && adminForm.get('adminName')?.touched) {
+                    <p class="text-sm text-red-600">Admin name is required</p>
+                  }
+                </div>
+
+                <div class="space-y-2">
+                  <ui-label htmlFor="adminEmail">Email Address</ui-label>
+                  <ui-input
+                    formControlName="adminEmail"
+                    type="email"
+                    placeholder="admin@company.com">
+                  </ui-input>
+                  @if (adminForm.get('adminEmail')?.invalid && adminForm.get('adminEmail')?.touched) {
+                    <p class="text-sm text-red-600">A valid email address is required</p>
+                  }
+                </div>
+
+                <div class="space-y-2">
+                  <ui-label htmlFor="adminPassword">Password</ui-label>
+                  <ui-input
+                    formControlName="adminPassword"
+                    type="password"
+                    placeholder="Minimum 8 characters">
+                  </ui-input>
+                  @if (adminForm.get('adminPassword')?.invalid && adminForm.get('adminPassword')?.touched) {
+                    <p class="text-sm text-red-600">Password must be at least 8 characters</p>
+                  }
+                </div>
+              </form>
+            </ui-card-content>
+            <ui-card-footer className="justify-between">
+              <ui-button variant="outline" (click)="previousStep()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                  <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+                </svg>
+                Back
+              </ui-button>
+              <ui-button
+                size="lg"
+                [disabled]="adminForm.invalid || submitting()"
+                (click)="finish()">
+                @if (submitting()) {
+                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Setting up...
+                } @else {
+                  Complete Setup
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
+                }
+              </ui-button>
+            </ui-card-footer>
+          </ui-card>
+        }
+
+        @if (errorMessage()) {
+          <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+            {{ errorMessage() }}
+          </div>
+        }
+      </div>
+    </app-page-layout>

@@ -1,0 +1,104 @@
+<app-page-layout>
+      <app-page-header
+        title="Create Lead"
+        subtitle="Record a new customer interaction"
+        backRoute="/agent">
+      </app-page-header>
+
+      <div class="max-w-2xl mx-auto">
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>New Lead</ui-card-title>
+            <ui-card-description>Fill in the details about this customer interaction</ui-card-description>
+          </ui-card-header>
+          <ui-card-content>
+            <form [formGroup]="leadForm" (ngSubmit)="onSubmit()" class="space-y-6">
+              <!-- Interaction Type -->
+              <div class="space-y-3">
+                <ui-label>Interaction Type</ui-label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  @for (type of interactionTypes; track type.value) {
+                    <label
+                      [class]="'flex flex-col items-center gap-2 p-4 rounded-lg border-2 cursor-pointer transition-all ' +
+                        (leadForm.get('interactionType')?.value === type.value
+                          ? 'border-primary bg-primary/5'
+                          : 'border-input hover:border-primary/50')">
+                      <input
+                        type="radio"
+                        formControlName="interactionType"
+                        [value]="type.value"
+                        class="sr-only" />
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        [class]="leadForm.get('interactionType')?.value === type.value ? 'text-primary' : 'text-muted-foreground'">
+                        <path [attr.d]="type.iconPath" />
+                        @if (type.iconPath2) {
+                          <path [attr.d]="type.iconPath2" />
+                        }
+                      </svg>
+                      <span class="text-sm font-medium">{{ type.label }}</span>
+                    </label>
+                  }
+                </div>
+                @if (leadForm.get('interactionType')?.invalid && leadForm.get('interactionType')?.touched) {
+                  <p class="text-sm text-red-600">Please select an interaction type</p>
+                }
+              </div>
+
+              <!-- Customer Name -->
+              <div class="space-y-2">
+                <ui-label htmlFor="customerName">Customer Name</ui-label>
+                <ui-input
+                  formControlName="customerName"
+                  placeholder="Enter customer's full name">
+                </ui-input>
+                @if (leadForm.get('customerName')?.invalid && leadForm.get('customerName')?.touched) {
+                  <p class="text-sm text-red-600">Customer name is required</p>
+                }
+              </div>
+
+              <!-- Customer Phone -->
+              <div class="space-y-2">
+                <ui-label htmlFor="customerPhone">Customer Phone</ui-label>
+                <ui-input
+                  formControlName="customerPhone"
+                  type="tel"
+                  placeholder="+998 (90) 123-4567">
+                </ui-input>
+                @if (leadForm.get('customerPhone')?.invalid && leadForm.get('customerPhone')?.touched) {
+                  <p class="text-sm text-red-600">A valid phone number is required</p>
+                }
+              </div>
+
+              <!-- Notes -->
+              <div class="space-y-2">
+                <ui-label htmlFor="notes">Notes</ui-label>
+                <ui-textarea
+                  formControlName="notes"
+                  placeholder="Add any relevant notes about this interaction..."
+                  [rows]="4">
+                </ui-textarea>
+              </div>
+
+              <div class="flex justify-end gap-3">
+                <ui-button variant="outline" type="button" (click)="cancel()">
+                  Cancel
+                </ui-button>
+                <ui-button
+                  type="submit"
+                  [disabled]="leadForm.invalid || submitting()">
+                  @if (submitting()) {
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                  } @else {
+                    Create Lead
+                  }
+                </ui-button>
+              </div>
+            </form>
+          </ui-card-content>
+        </ui-card>
+      </div>
+    </app-page-layout>

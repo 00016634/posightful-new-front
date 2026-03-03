@@ -1,0 +1,15 @@
+<span [ngClass]="['relative flex shrink-0 overflow-hidden rounded-full', sizeClass, className]">
+      <img
+        *ngIf="src && !imgError"
+        [src]="src"
+        [alt]="alt"
+        class="aspect-square h-full w-full object-cover"
+        (error)="imgError = true"
+      />
+      <span
+        *ngIf="!src || imgError"
+        class="flex h-full w-full items-center justify-center rounded-full bg-muted text-sm font-medium"
+      >
+        {{ fallback }}
+      </span>
+    </span>
