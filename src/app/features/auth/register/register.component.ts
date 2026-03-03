@@ -2,18 +2,20 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+  styleUrl: './register.component.css',
 })
 export class RegisterComponent {
   registerForm: FormGroup;
   loading = false;
   error = '';
+  success = '';
 
   constructor(
     private fb: FormBuilder,
@@ -37,7 +39,10 @@ export class RegisterComponent {
   get password2() { return this.registerForm.get('password2'); }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) return;
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
 
     const { password, password2 } = this.registerForm.value;
     if (password !== password2) {
@@ -47,12 +52,21 @@ export class RegisterComponent {
 
     this.loading = true;
     this.error = '';
+    this.success = '';
 
-    this.authService.register(this.registerForm.value).subscribe({
+    this.authService.register(this.registerForm.value).pipe(
+      finalize(() => this.loading = false)
+    ).subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        this.success = 'Account created! Redirecting...';
+        setTimeout(() => this.router.navigate(['/']), 500);
       },
       error: (err) => {
+        if (err.status === 0) {
+          this.error = 'Cannot connect to server. Please check if the backend is running.';
+          return;
+        }
+
         const errors = err.error;
         if (typeof errors === 'object' && errors !== null) {
           const messages = Object.entries(errors)
@@ -62,7 +76,6 @@ export class RegisterComponent {
         } else {
           this.error = 'Registration failed. Please try again.';
         }
-        this.loading = false;
       },
     });
   }
