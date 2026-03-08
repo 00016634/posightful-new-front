@@ -25,15 +25,15 @@
             </ui-card-header>
             <ui-card-content>
               <div class="grid grid-cols-3 gap-6">
-                <div>
+                <div class="space-y-2">
                   <p class="text-sm text-muted-foreground">Total Bonus Expenses</p>
                   <p class="text-3xl font-semibold text-green-600">\${{ formatNumber(currentMonth()!.totalBonus) }}</p>
                 </div>
-                <div>
+                <div class="space-y-2">
                   <p class="text-sm text-muted-foreground">Active Agents</p>
                   <p class="text-3xl font-semibold">{{ currentMonth()!.agentCount }}</p>
                 </div>
-                <div>
+                <div class="space-y-2">
                   <p class="text-sm text-muted-foreground">Average per Agent</p>
                   <p class="text-3xl font-semibold">\${{ formatNumber(currentMonth()!.avgPerAgent) }}</p>
                 </div>
@@ -62,7 +62,7 @@
               <ui-card-title>Monthly Breakdown</ui-card-title>
             </ui-card-header>
             <ui-card-content>
-              <div class="space-y-2">
+              <div class="space-y-3">
                 @for (data of monthlyBonuses(); track data.month) {
                   <div
                     class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"

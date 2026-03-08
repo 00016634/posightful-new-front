@@ -102,6 +102,11 @@ export class RoleSelectorComponent implements OnInit {
     this.router.navigateByUrl(path);
   }
 
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
   private toCard(role: Role): RoleCard {
     const colors = COLOR_MAP[role.color] ?? COLOR_MAP['blue'];
     const icon = ICON_MAP[role.icon] ?? ICON_MAP['user'];

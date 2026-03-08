@@ -65,4 +65,5 @@ export class TableHeadComponent {
 })
 export class TableCellComponent {
   @Input() className = '';
+  @Input() colSpan: number | string | undefined;
 }

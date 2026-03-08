@@ -13,7 +13,8 @@ export const authGuard: CanActivateFn = (route, state) => {
       const hasRole = authService.hasRole(requiredRole);
       if (!hasRole) {
         // Redirect to their own dashboard or home
-        router.navigate([getRoleDashboardPath(authService)]);
+        const dashPath = getRoleDashboardPath(authService);
+        router.navigate([dashPath]);
         return false;
       }
     }
@@ -25,6 +26,30 @@ export const authGuard: CanActivateFn = (route, state) => {
   return false;
 };
 
+/**
+ * Guard for the root `/` route (onboarding/role-selector).
+ * If the user already has a role, skip the role-selector and go to their dashboard.
+ */
+export const onboardingGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isAuthenticated) {
+    router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+    return false;
+  }
+
+  // If user has a role, redirect to their dashboard — skip role-selector
+  const dashPath = getRoleDashboardPath(authService);
+  if (dashPath !== '/') {
+    router.navigate([dashPath]);
+    return false;
+  }
+
+  // No role assigned yet — show role-selector
+  return true;
+};
+
 export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -34,7 +59,8 @@ export const guestGuard: CanActivateFn = () => {
   }
 
   // Already authenticated, redirect to role-based dashboard
-  router.navigate([getRoleDashboardPath(authService)]);
+  const dashPath = getRoleDashboardPath(authService);
+  router.navigate([dashPath]);
   return false;
 };
 

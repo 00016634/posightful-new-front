@@ -16,6 +16,7 @@ import {
   TableCellComponent,
 } from '../../../shared/ui';
 import { AnalyticsService } from '../../../core/services/analytics.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-manager-dashboard',
@@ -43,6 +44,7 @@ import { AnalyticsService } from '../../../core/services/analytics.service';
 export class ManagerDashboardComponent implements OnInit {
   private analyticsService = inject(AnalyticsService);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   metrics = signal<any>(null);
   revenueTrend = signal<any>(null);
@@ -83,5 +85,10 @@ export class ManagerDashboardComponent implements OnInit {
 
   formatCurrency(value: number): string {
     return '$' + value.toLocaleString();
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

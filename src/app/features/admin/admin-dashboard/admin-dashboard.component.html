@@ -8,6 +8,15 @@
           <div class="flex gap-2">
             <ui-button (click)="router.navigateByUrl('/admin/users/new')">Add User</ui-button>
             <ui-button variant="outline" (click)="router.navigateByUrl('/admin/products')">Add Product</ui-button>
+            <button
+              class="inline-flex items-center gap-2 rounded-md text-sm font-medium h-9 px-3 border border-input bg-background shadow-sm hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+              (click)="logout()"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+              </svg>
+              Logout
+            </button>
           </div>
         </div>
 

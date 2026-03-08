@@ -1,4 +1,5 @@
 <app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
       <app-page-header title="Supervisor Profile" subtitle="Your personal information" backRoute="/supervisor">
       </app-page-header>
 
@@ -19,27 +20,27 @@
                 <p class="text-sm font-medium text-muted-foreground">{{ profile().supervisorCode }}</p>
               </div>
               <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
+                <div class="space-y-1">
                   <p class="text-sm text-muted-foreground">Full Name</p>
                   <p class="text-sm font-medium">{{ profile().fullName }}</p>
                 </div>
-                <div>
+                <div class="space-y-1">
                   <p class="text-sm text-muted-foreground">Supervisor Code</p>
                   <p class="text-sm font-medium">{{ profile().supervisorCode }}</p>
                 </div>
-                <div>
+                <div class="space-y-1">
                   <p class="text-sm text-muted-foreground">Phone</p>
                   <p class="text-sm font-medium">{{ profile().phone }}</p>
                 </div>
-                <div>
+                <div class="space-y-1">
                   <p class="text-sm text-muted-foreground">Region</p>
                   <p class="text-sm font-medium">{{ profile().region }}</p>
                 </div>
-                <div>
+                <div class="space-y-1">
                   <p class="text-sm text-muted-foreground">Manager</p>
                   <p class="text-sm font-medium">{{ profile().manager }}</p>
                 </div>
-                <div>
+                <div class="space-y-1">
                   <p class="text-sm text-muted-foreground">Hire Date</p>
                   <p class="text-sm font-medium">{{ profile().hireDate }}</p>
                 </div>
@@ -69,7 +70,7 @@
       </div>
 
       <!-- Team Agents -->
-      <ui-card className="mt-6">
+      <ui-card>
         <ui-card-header>
           <ui-card-title>Team Agents</ui-card-title>
         </ui-card-header>
@@ -94,4 +95,5 @@
           </div>
         </ui-card-content>
       </ui-card>
+      </div>
     </app-page-layout>

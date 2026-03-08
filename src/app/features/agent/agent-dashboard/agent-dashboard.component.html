@@ -1,4 +1,5 @@
 <app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
       <app-page-header
         title="Agent Dashboard"
         subtitle="Welcome back! Here's your performance overview.">
@@ -17,7 +18,7 @@
       </app-page-header>
 
       <!-- Filters -->
-      <div class="mb-6">
+      <div>
         <app-dashboard-filters
           [timeRange]="timeRange()"
           (timeRangeChange)="timeRange.set($event)">
@@ -25,7 +26,7 @@
       </div>
 
       <!-- Analytics Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <app-analytics-card
           title="Leads by Day"
           [value]="metrics().leadsByDay.value.toString()"
@@ -96,5 +97,6 @@
             paid="$795">
           </app-bonuses-card>
         </div>
+      </div>
       </div>
     </app-page-layout>

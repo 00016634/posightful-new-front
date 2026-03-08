@@ -1,6 +1,7 @@
 <app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
       <!-- Header -->
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
           <h1 class="text-3xl font-bold tracking-tight">Manager Dashboard</h1>
           <p class="text-muted-foreground mt-1">Overview of your organization's performance</p>
@@ -9,11 +10,20 @@
           <ui-button variant="outline" (click)="navigateTo('/manager/all-agents')">All Agents</ui-button>
           <ui-button variant="outline" (click)="navigateTo('/manager/product-funnel')">Product Funnel</ui-button>
           <ui-button (click)="navigateTo('/manager/bonus-management')">Bonus Management</ui-button>
+          <button
+            class="inline-flex items-center gap-2 rounded-md text-sm font-medium h-9 px-3 border border-input bg-background shadow-sm hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+            (click)="logout()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+            </svg>
+            Logout
+          </button>
         </div>
       </div>
 
       <!-- Metric Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         @if (metrics()) {
           <app-analytics-card
             title="Total Agents"
@@ -41,7 +51,7 @@
       </div>
 
       <!-- Charts Row 1 -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         @if (revenueTrend()) {
           <ui-card>
             <ui-card-header>
@@ -75,7 +85,7 @@
       </div>
 
       <!-- Charts Row 2 -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         @if (conversionRateTrend()) {
           <ui-card>
             <ui-card-header>
@@ -155,4 +165,5 @@
           </ui-table>
         </ui-card-content>
       </ui-card>
+      </div>
     </app-page-layout>

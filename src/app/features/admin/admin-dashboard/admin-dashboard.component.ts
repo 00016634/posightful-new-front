@@ -6,6 +6,7 @@ import {
   ButtonComponent,
 } from '../../../shared/ui';
 import { UserManagementService } from '../../../core/services/user-management.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -22,6 +23,12 @@ import { UserManagementService } from '../../../core/services/user-management.se
 export class AdminDashboardComponent implements OnInit {
   router = inject(Router);
   private userService = inject(UserManagementService);
+  private authService = inject(AuthService);
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 
   stats = signal({ tenantName: '—', totalUsers: 0, activeUsers: 0, totalProducts: 0 });
   recentActivity = signal<{ action: string; detail: string; time: string; timestamp: string }[]>([]);

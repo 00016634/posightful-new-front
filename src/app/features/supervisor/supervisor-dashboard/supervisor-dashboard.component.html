@@ -1,4 +1,5 @@
 <app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
       <app-page-header title="Supervisor Dashboard" subtitle="Monitor team performance and manage leads">
         <button
           class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 bg-primary text-primary-foreground shadow hover:bg-primary/90"
@@ -15,7 +16,7 @@
       </app-page-header>
 
       <!-- Metric Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <app-analytics-card
           title="Active Agents"
           [value]="metrics().activeAgents.value"
@@ -107,5 +108,6 @@
             </div>
           </ui-card-content>
         </ui-card>
+      </div>
       </div>
     </app-page-layout>

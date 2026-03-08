@@ -1,4 +1,5 @@
 <app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
       <app-page-header
         title="All Agents"
         subtitle="View and manage all personnel"
@@ -6,7 +7,7 @@
       />
 
       <!-- Filters -->
-      <ui-card className="mb-6">
+      <ui-card>
         <ui-card-content className="p-4">
           <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
@@ -114,15 +115,17 @@
                     </button>
                   </ui-table-cell>
                 </ui-table-row>
-              } @empty {
-                <ui-table-row>
-                  <ui-table-cell className="text-center py-8 text-muted-foreground" [attr.colspan]="9">
+              }
+              @if (filteredPersonnel().length === 0) {
+                <tr>
+                  <td colspan="9" class="text-center py-12 text-muted-foreground">
                     No personnel found matching your criteria
-                  </ui-table-cell>
-                </ui-table-row>
+                  </td>
+                </tr>
               }
             </ui-table-body>
           </ui-table>
         </ui-card-content>
       </ui-card>
+      </div>
     </app-page-layout>

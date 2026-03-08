@@ -59,6 +59,13 @@
                 </ui-table-row>
               </ui-table-header>
               <ui-table-body>
+                @if (filteredUsers().length === 0) {
+                  <tr>
+                    <td colspan="6" class="text-center py-12 text-muted-foreground">
+                      No users found
+                    </td>
+                  </tr>
+                }
                 @for (user of filteredUsers(); track user.id) {
                   <ui-table-row>
                     <ui-table-cell>
@@ -88,10 +95,6 @@
                         </ui-button>
                       </div>
                     </ui-table-cell>
-                  </ui-table-row>
-                } @empty {
-                  <ui-table-row>
-                    <ui-table-cell className="text-center py-8 text-muted-foreground" colSpan="6">No users found</ui-table-cell>
                   </ui-table-row>
                 }
               </ui-table-body>

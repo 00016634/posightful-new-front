@@ -7,6 +7,8 @@ import {
   TableRowComponent, TableHeadComponent, TableCellComponent,
 } from '../../../shared/ui';
 import { ToastService } from '../../../shared/ui/toast.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-accountant-dashboard',
@@ -24,6 +26,13 @@ import { ToastService } from '../../../shared/ui/toast.service';
 })
 export class AccountantDashboardComponent {
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
   Math = Math;
   selectedYear = signal('2026');
   selectedMonth = signal('01');

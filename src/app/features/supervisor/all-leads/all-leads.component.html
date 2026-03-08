@@ -1,9 +1,10 @@
 <app-page-layout>
+      <div class="mx-auto max-w-7xl space-y-6">
       <app-page-header title="All Leads" subtitle="View and manage all team leads" backRoute="/supervisor">
       </app-page-header>
 
       <!-- Filters -->
-      <div class="flex flex-col md:flex-row gap-4 mb-6">
+      <div class="flex flex-col md:flex-row gap-4">
         <div class="flex-1">
           <input
             type="text"
@@ -85,17 +86,19 @@
                     </div>
                   </ui-table-cell>
                 </ui-table-row>
-              } @empty {
-                <ui-table-row>
-                  <ui-table-cell className="text-center py-8 text-muted-foreground" colSpan="8">
+              }
+              @if (filteredLeads().length === 0) {
+                <tr>
+                  <td colspan="8" class="text-center py-12 text-muted-foreground">
                     No leads found matching your criteria.
-                  </ui-table-cell>
-                </ui-table-row>
+                  </td>
+                </tr>
               }
             </ui-table-body>
           </ui-table>
         </div>
       </ui-card>
+      </div>
 
       <!-- View Dialog -->
       <ui-dialog [open]="viewDialogOpen()" (openChange)="viewDialogOpen.set($event)">
@@ -103,8 +106,8 @@
           <ui-dialog-title>Lead Details</ui-dialog-title>
         </ui-dialog-header>
         @if (selectedLead()) {
-          <div class="grid gap-3 py-4">
-            <div class="grid grid-cols-2 gap-2 text-sm">
+          <div class="grid gap-4 py-4">
+            <div class="grid grid-cols-2 gap-3 text-sm">
               <span class="text-muted-foreground">ID:</span>
               <span class="font-medium">{{ selectedLead()!.id }}</span>
               <span class="text-muted-foreground">Agent:</span>
@@ -132,7 +135,7 @@
           <ui-dialog-title>Edit Lead</ui-dialog-title>
         </ui-dialog-header>
         <div class="grid gap-4 py-4">
-          <div class="grid gap-2">
+          <div class="grid gap-3">
             <ui-label>Customer Name</ui-label>
             <input
               type="text"
@@ -141,7 +144,7 @@
               (input)="updateEditForm('customerName', asInputValue($event))"
             />
           </div>
-          <div class="grid gap-2">
+          <div class="grid gap-3">
             <ui-label>Phone</ui-label>
             <input
               type="text"
@@ -150,7 +153,7 @@
               (input)="updateEditForm('customerPhone', asInputValue($event))"
             />
           </div>
-          <div class="grid gap-2">
+          <div class="grid gap-3">
             <ui-label>Status</ui-label>
             <select
               class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
@@ -162,7 +165,7 @@
               <option value="lost">Lost</option>
             </select>
           </div>
-          <div class="grid gap-2">
+          <div class="grid gap-3">
             <ui-label>Notes</ui-label>
             <textarea
               class="flex min-h-[60px] w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"

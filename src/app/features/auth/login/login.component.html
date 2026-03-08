@@ -47,30 +47,30 @@
         }
       </div>
 
-      @if (error) {
+      @if (error()) {
         <div class="alert alert-error">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
           </svg>
-          <span>{{ error }}</span>
+          <span>{{ error() }}</span>
         </div>
       }
 
-      @if (success) {
+      @if (success()) {
         <div class="alert alert-success">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 6 9 17l-5-5"/>
           </svg>
-          <span>{{ success }}</span>
+          <span>{{ success() }}</span>
         </div>
       }
 
       <button
         type="submit"
         class="btn btn-primary btn-block"
-        [disabled]="loading"
+        [disabled]="loading()"
       >
-        @if (!loading) {
+        @if (!loading()) {
           <span>Sign In</span>
         } @else {
           <span class="btn-loading">

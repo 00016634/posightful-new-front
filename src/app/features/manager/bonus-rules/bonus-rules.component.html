@@ -74,12 +74,13 @@
                       </div>
                     </ui-table-cell>
                   </ui-table-row>
-                } @empty {
-                  <ui-table-row>
-                    <ui-table-cell className="text-center py-8 text-muted-foreground" colSpan="7">
+                }
+                @if (rules().length === 0) {
+                  <tr>
+                    <td colspan="7" class="text-center py-12 text-muted-foreground">
                       No rules configured
-                    </ui-table-cell>
-                  </ui-table-row>
+                    </td>
+                  </tr>
                 }
               </ui-table-body>
             </ui-table>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -13,14 +13,15 @@ import { finalize } from 'rxjs';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  loading = false;
-  error = '';
-  success = '';
+  loading = signal(false);
+  error = signal('');
+  success = signal('');
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -37,15 +38,19 @@ export class LoginComponent {
       return;
     }
 
-    this.loading = true;
-    this.error = '';
-    this.success = '';
+    this.loading.set(true);
+    this.error.set('');
+    this.success.set('');
 
     this.authService.login(this.loginForm.value).pipe(
-      finalize(() => this.loading = false)
+      finalize(() => {
+        this.loading.set(false);
+        this.cdr.detectChanges();
+      })
     ).subscribe({
       next: () => {
-        this.success = 'Login successful! Redirecting...';
+        this.success.set('Login successful! Redirecting...');
+        this.cdr.detectChanges();
 
         const user = this.authService.currentUserValue;
         const role = user?.roles?.[0]?.code || user?.roles?.[0]?.name;
@@ -64,24 +69,27 @@ export class LoginComponent {
       },
       error: (err) => {
         if (err.status === 0) {
-          this.error = 'Cannot connect to server. Please check if the backend is running.';
+          this.error.set('Cannot connect to server. Please check if the backend is running.');
+          this.cdr.detectChanges();
           return;
         }
 
         const body = err.error;
         if (typeof body === 'string') {
-          this.error = body;
+          this.error.set(body);
         } else if (body) {
-          this.error =
+          this.error.set(
             body.detail ||
             body.message ||
             body.non_field_errors?.[0] ||
             body.username?.[0] ||
             body.password?.[0] ||
-            'Invalid username or password.';
+            'Invalid username or password.'
+          );
         } else {
-          this.error = 'Invalid username or password.';
+          this.error.set('Invalid username or password.');
         }
+        this.cdr.detectChanges();
       },
     });
   }
