@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
             <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/admin')">
@@ -47,8 +47,8 @@
 
         @if (products().length === 0) {
           <ui-card>
-            <ui-card-content className="py-16 text-center">
-              <p class="text-muted-foreground mb-4">No products found</p>
+            <ui-card-content className="py-20 !pt-20 text-center">
+              <p class="text-muted-foreground mb-4 text-sm">No products found</p>
               <ui-button (click)="openDialog(null)">Add Your First Product</ui-button>
             </ui-card-content>
           </ui-card>

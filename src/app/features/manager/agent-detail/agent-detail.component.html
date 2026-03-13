@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
         <!-- Header -->
         <div class="flex items-center gap-4">
           <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/all-agents')">
@@ -115,37 +115,41 @@
             <ui-card-header>
               <ui-card-title>Attached Agents</ui-card-title>
             </ui-card-header>
-            <ui-card-content>
-              <ui-table>
-                <ui-table-header>
-                  <ui-table-row>
-                    <ui-table-head>Agent</ui-table-head>
-                    <ui-table-head className="text-right">Leads</ui-table-head>
-                    <ui-table-head className="text-right">Conversions</ui-table-head>
-                    <ui-table-head className="text-right">Conv. Rate</ui-table-head>
-                    <ui-table-head className="text-right">Revenue</ui-table-head>
-                  </ui-table-row>
-                </ui-table-header>
-                <ui-table-body>
-                  @for (a of attachedAgents; track a.agentCode) {
+            <ui-card-content [className]="attachedAgents.length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+              @if (attachedAgents.length > 0) {
+                <ui-table>
+                  <ui-table-header>
                     <ui-table-row>
-                      <ui-table-cell>
-                        <div class="flex items-center gap-3">
-                          <ui-avatar [fallback]="getInitials(a.fullName)" />
-                          <div>
-                            <p class="font-medium">{{ a.fullName }}</p>
-                            <p class="text-sm text-muted-foreground">{{ a.agentCode }}</p>
-                          </div>
-                        </div>
-                      </ui-table-cell>
-                      <ui-table-cell className="text-right font-medium">{{ a.leads }}</ui-table-cell>
-                      <ui-table-cell className="text-right font-medium text-green-600">{{ a.conversions }}</ui-table-cell>
-                      <ui-table-cell className="text-right">{{ a.conversionRate }}%</ui-table-cell>
-                      <ui-table-cell className="text-right font-medium">\${{ formatNumber(a.revenue) }}</ui-table-cell>
+                      <ui-table-head className="px-4 py-3">Agent</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Leads</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Conversions</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Conv. Rate</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Revenue</ui-table-head>
                     </ui-table-row>
-                  }
-                </ui-table-body>
-              </ui-table>
+                  </ui-table-header>
+                  <ui-table-body>
+                    @for (a of attachedAgents; track a.agentCode) {
+                      <ui-table-row>
+                        <ui-table-cell className="px-4 py-3">
+                          <div class="flex items-center gap-3">
+                            <ui-avatar [fallback]="getInitials(a.fullName)" />
+                            <div>
+                              <p class="font-medium">{{ a.fullName }}</p>
+                              <p class="text-sm text-muted-foreground mt-0.5">{{ a.agentCode }}</p>
+                            </div>
+                          </div>
+                        </ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-medium">{{ a.leads }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-medium text-green-600">{{ a.conversions }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right">{{ a.conversionRate }}%</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ formatNumber(a.revenue) }}</ui-table-cell>
+                      </ui-table-row>
+                    }
+                  </ui-table-body>
+                </ui-table>
+              } @else {
+                <p class="text-center text-muted-foreground text-sm">No agents found matching your criteria</p>
+              }
             </ui-card-content>
           </ui-card>
         } @else {
@@ -153,33 +157,37 @@
             <ui-card-header>
               <ui-card-title>Recent Leads</ui-card-title>
             </ui-card-header>
-            <ui-card-content>
-              <ui-table>
-                <ui-table-header>
-                  <ui-table-row>
-                    <ui-table-head>Lead ID</ui-table-head>
-                    <ui-table-head>Customer</ui-table-head>
-                    <ui-table-head>Status</ui-table-head>
-                    <ui-table-head>Amount</ui-table-head>
-                    <ui-table-head>Date</ui-table-head>
-                  </ui-table-row>
-                </ui-table-header>
-                <ui-table-body>
-                  @for (lead of recentLeads; track lead.id) {
+            <ui-card-content [className]="recentLeads.length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+              @if (recentLeads.length > 0) {
+                <ui-table>
+                  <ui-table-header>
                     <ui-table-row>
-                      <ui-table-cell className="font-medium">{{ lead.id }}</ui-table-cell>
-                      <ui-table-cell>{{ lead.customer }}</ui-table-cell>
-                      <ui-table-cell>
-                        <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + getStatusColor(lead.status)">
-                          {{ lead.status }}
-                        </span>
-                      </ui-table-cell>
-                      <ui-table-cell>{{ lead.amount ? '$' + formatNumber(lead.amount) : '—' }}</ui-table-cell>
-                      <ui-table-cell className="text-sm text-muted-foreground">{{ lead.date }}</ui-table-cell>
+                      <ui-table-head className="px-4 py-3">Lead ID</ui-table-head>
+                      <ui-table-head className="px-4 py-3">Customer</ui-table-head>
+                      <ui-table-head className="px-4 py-3">Status</ui-table-head>
+                      <ui-table-head className="px-4 py-3">Amount</ui-table-head>
+                      <ui-table-head className="px-4 py-3">Date</ui-table-head>
                     </ui-table-row>
-                  }
-                </ui-table-body>
-              </ui-table>
+                  </ui-table-header>
+                  <ui-table-body>
+                    @for (lead of recentLeads; track lead.id) {
+                      <ui-table-row>
+                        <ui-table-cell className="px-4 py-3 font-medium">{{ lead.id }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3">{{ lead.customer }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3">
+                          <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + getStatusColor(lead.status)">
+                            {{ lead.status }}
+                          </span>
+                        </ui-table-cell>
+                        <ui-table-cell className="px-4 py-3">{{ lead.amount ? '$' + formatNumber(lead.amount) : '—' }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-sm text-muted-foreground">{{ lead.date }}</ui-table-cell>
+                      </ui-table-row>
+                    }
+                  </ui-table-body>
+                </ui-table>
+              } @else {
+                <p class="text-center text-muted-foreground text-sm">No leads found matching your criteria</p>
+              }
             </ui-card-content>
           </ui-card>
         }

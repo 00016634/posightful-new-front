@@ -3,7 +3,7 @@ import { TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageLayoutComponent, PageHeaderComponent } from '../../../shared/layouts';
 import {
-  CardComponent,
+  CardComponent, CardContentComponent,
   TableComponent, TableHeaderComponent, TableBodyComponent, TableRowComponent,
   TableHeadComponent, TableCellComponent,
   SelectComponent, DialogComponent, DialogHeaderComponent, DialogTitleComponent,
@@ -21,6 +21,7 @@ import { ToastService } from '../../../shared/ui/toast.service';
     PageLayoutComponent,
     PageHeaderComponent,
     CardComponent,
+    CardContentComponent,
     TableComponent,
     TableHeaderComponent,
     TableBodyComponent,

@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-2xl font-semibold">Accountant - Bonus Reports</h1>
@@ -84,44 +84,48 @@
                 <ui-button variant="outline" (click)="exportCSV('summary')">Export CSV</ui-button>
               </div>
             </ui-card-header>
-            <ui-card-content>
-              <ui-table>
-                <ui-table-header>
-                  <ui-table-row>
-                    <ui-table-head>Agent</ui-table-head>
-                    <ui-table-head className="text-right">Conversions</ui-table-head>
-                    <ui-table-head className="text-right">Total Sales</ui-table-head>
-                    <ui-table-head className="text-right">Avg Sale</ui-table-head>
-                    <ui-table-head className="text-right">Total Bonus</ui-table-head>
-                  </ui-table-row>
-                </ui-table-header>
-                <ui-table-body>
-                  @for (agent of bonusSummary; track agent.agentCode) {
+            <ui-card-content [className]="bonusSummary.length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+              @if (bonusSummary.length > 0) {
+                <ui-table>
+                  <ui-table-header>
                     <ui-table-row>
-                      <ui-table-cell>
-                        <div class="flex items-center gap-3">
-                          <ui-avatar [fallback]="initials(agent.agentName)" />
-                          <div>
-                            <p class="font-medium">{{ agent.agentName }}</p>
-                            <p class="text-sm text-muted-foreground">{{ agent.agentCode }}</p>
-                          </div>
-                        </div>
-                      </ui-table-cell>
-                      <ui-table-cell className="text-right font-medium">{{ agent.conversions }}</ui-table-cell>
-                      <ui-table-cell className="text-right font-medium">\${{ fmt(agent.totalSales) }}</ui-table-cell>
-                      <ui-table-cell className="text-right text-muted-foreground">\${{ fmt(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
-                      <ui-table-cell className="text-right font-semibold text-green-600">\${{ fmt(agent.totalBonus) }}</ui-table-cell>
+                      <ui-table-head className="px-4 py-3">Agent</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Conversions</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Total Sales</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Avg Sale</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Total Bonus</ui-table-head>
                     </ui-table-row>
-                  }
-                  <ui-table-row className="bg-gray-50 font-semibold">
-                    <ui-table-cell>TOTAL</ui-table-cell>
-                    <ui-table-cell className="text-right">{{ totalConversions() }}</ui-table-cell>
-                    <ui-table-cell className="text-right">\${{ fmt(totalSales()) }}</ui-table-cell>
-                    <ui-table-cell className="text-right">\${{ fmt(Math.round(totalSales() / totalConversions())) }}</ui-table-cell>
-                    <ui-table-cell className="text-right text-green-600">\${{ fmt(totalBonus()) }}</ui-table-cell>
-                  </ui-table-row>
-                </ui-table-body>
-              </ui-table>
+                  </ui-table-header>
+                  <ui-table-body>
+                    @for (agent of bonusSummary; track agent.agentCode) {
+                      <ui-table-row>
+                        <ui-table-cell className="px-4 py-3">
+                          <div class="flex items-center gap-3">
+                            <ui-avatar [fallback]="initials(agent.agentName)" />
+                            <div>
+                              <p class="font-medium">{{ agent.agentName }}</p>
+                              <p class="text-sm text-muted-foreground mt-0.5">{{ agent.agentCode }}</p>
+                            </div>
+                          </div>
+                        </ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-medium">{{ agent.conversions }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ fmt(agent.totalSales) }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right text-muted-foreground">\${{ fmt(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">\${{ fmt(agent.totalBonus) }}</ui-table-cell>
+                      </ui-table-row>
+                    }
+                    <ui-table-row className="bg-gray-50 font-semibold">
+                      <ui-table-cell className="px-4 py-3">TOTAL</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right">{{ totalConversions() }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right">\${{ fmt(totalSales()) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right">\${{ fmt(Math.round(totalSales() / totalConversions())) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right text-green-600">\${{ fmt(totalBonus()) }}</ui-table-cell>
+                    </ui-table-row>
+                  </ui-table-body>
+                </ui-table>
+              } @else {
+                <p class="text-center text-muted-foreground text-sm">No personnel found matching your criteria</p>
+              }
             </ui-card-content>
           </ui-card>
 
@@ -135,45 +139,49 @@
                 <ui-button variant="outline" (click)="exportCSV('details')">Export CSV</ui-button>
               </div>
             </ui-card-header>
-            <ui-card-content>
-              <div class="overflow-x-auto">
-                <ui-table>
-                  <ui-table-header>
-                    <ui-table-row>
-                      <ui-table-head>Agent</ui-table-head>
-                      <ui-table-head>Lead ID</ui-table-head>
-                      <ui-table-head>Customer</ui-table-head>
-                      <ui-table-head>Sale Date</ui-table-head>
-                      <ui-table-head className="text-right">Sale Amount</ui-table-head>
-                      <ui-table-head>Rule Applied</ui-table-head>
-                      <ui-table-head>Calculation</ui-table-head>
-                      <ui-table-head className="text-right">Bonus</ui-table-head>
-                    </ui-table-row>
-                  </ui-table-header>
-                  <ui-table-body>
-                    @for (d of bonusDetails; track d.id) {
+            <ui-card-content [className]="bonusDetails.length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+              @if (bonusDetails.length > 0) {
+                <div class="overflow-x-auto">
+                  <ui-table>
+                    <ui-table-header>
                       <ui-table-row>
-                        <ui-table-cell>
-                          <p class="font-medium text-sm">{{ d.agentName }}</p>
-                          <p class="text-xs text-muted-foreground">{{ d.agentCode }}</p>
-                        </ui-table-cell>
-                        <ui-table-cell className="font-mono text-sm">{{ d.leadId }}</ui-table-cell>
-                        <ui-table-cell>{{ d.customerName }}</ui-table-cell>
-                        <ui-table-cell className="text-sm text-muted-foreground">{{ d.saleDate }}</ui-table-cell>
-                        <ui-table-cell className="text-right font-medium">\${{ fmt(d.saleAmount) }}</ui-table-cell>
-                        <ui-table-cell>
-                          <p class="font-medium text-sm">{{ d.ruleName }}</p>
-                          <p class="text-xs text-muted-foreground">{{ d.ruleType }}</p>
-                        </ui-table-cell>
-                        <ui-table-cell>
-                          <ui-badge variant="outline" className="font-mono text-xs">{{ d.calculation }}</ui-badge>
-                        </ui-table-cell>
-                        <ui-table-cell className="text-right font-semibold text-green-600">\${{ fmt(d.bonusAmount) }}</ui-table-cell>
+                        <ui-table-head className="px-4 py-3">Agent</ui-table-head>
+                        <ui-table-head className="px-4 py-3">Lead ID</ui-table-head>
+                        <ui-table-head className="px-4 py-3">Customer</ui-table-head>
+                        <ui-table-head className="px-4 py-3">Sale Date</ui-table-head>
+                        <ui-table-head className="px-4 py-3 text-right">Sale Amount</ui-table-head>
+                        <ui-table-head className="px-4 py-3">Rule Applied</ui-table-head>
+                        <ui-table-head className="px-4 py-3">Calculation</ui-table-head>
+                        <ui-table-head className="px-4 py-3 text-right">Bonus</ui-table-head>
                       </ui-table-row>
-                    }
-                  </ui-table-body>
-                </ui-table>
-              </div>
+                    </ui-table-header>
+                    <ui-table-body>
+                      @for (d of bonusDetails; track d.id) {
+                        <ui-table-row>
+                          <ui-table-cell className="px-4 py-3">
+                            <p class="font-medium text-sm">{{ d.agentName }}</p>
+                            <p class="text-xs text-muted-foreground mt-0.5">{{ d.agentCode }}</p>
+                          </ui-table-cell>
+                          <ui-table-cell className="px-4 py-3 font-mono text-sm">{{ d.leadId }}</ui-table-cell>
+                          <ui-table-cell className="px-4 py-3">{{ d.customerName }}</ui-table-cell>
+                          <ui-table-cell className="px-4 py-3 text-sm text-muted-foreground">{{ d.saleDate }}</ui-table-cell>
+                          <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ fmt(d.saleAmount) }}</ui-table-cell>
+                          <ui-table-cell className="px-4 py-3">
+                            <p class="font-medium text-sm">{{ d.ruleName }}</p>
+                            <p class="text-xs text-muted-foreground mt-0.5">{{ d.ruleType }}</p>
+                          </ui-table-cell>
+                          <ui-table-cell className="px-4 py-3">
+                            <ui-badge variant="outline" className="font-mono text-xs">{{ d.calculation }}</ui-badge>
+                          </ui-table-cell>
+                          <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">\${{ fmt(d.bonusAmount) }}</ui-table-cell>
+                        </ui-table-row>
+                      }
+                    </ui-table-body>
+                  </ui-table>
+                </div>
+              } @else {
+                <p class="text-center text-muted-foreground text-sm">No personnel found matching your criteria</p>
+              }
             </ui-card-content>
           </ui-card>
         }

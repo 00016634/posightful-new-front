@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
         <!-- Header -->
         <div class="flex items-center gap-4">
           <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/agent')">
@@ -33,30 +33,36 @@
             </div>
 
             <!-- Conversions Table -->
-            <ui-scroll-area className="h-[600px] rounded-md border">
-              <ui-table>
-                <ui-table-header>
-                  <ui-table-row>
-                    <ui-table-head>Lead ID</ui-table-head>
-                    <ui-table-head>Phone Number</ui-table-head>
-                    <ui-table-head>Converted Date</ui-table-head>
-                    <ui-table-head className="text-right">Purchase Amount</ui-table-head>
-                    <ui-table-head className="text-right">Bonus Received</ui-table-head>
-                  </ui-table-row>
-                </ui-table-header>
-                <ui-table-body>
-                  @for (conv of conversions(); track conv.leadId) {
+            @if (conversions().length > 0) {
+              <ui-scroll-area className="h-[600px] rounded-md border">
+                <ui-table>
+                  <ui-table-header>
                     <ui-table-row>
-                      <ui-table-cell className="font-medium">{{ conv.leadId }}</ui-table-cell>
-                      <ui-table-cell>{{ conv.phoneNumber }}</ui-table-cell>
-                      <ui-table-cell>{{ conv.convertedDate }}</ui-table-cell>
-                      <ui-table-cell className="text-right">\${{ conv.purchaseAmount | number }}</ui-table-cell>
-                      <ui-table-cell className="text-right text-green-600 font-medium">\${{ conv.bonusReceived | number }}</ui-table-cell>
+                      <ui-table-head className="px-4 py-3">Lead ID</ui-table-head>
+                      <ui-table-head className="px-4 py-3">Phone Number</ui-table-head>
+                      <ui-table-head className="px-4 py-3">Converted Date</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Purchase Amount</ui-table-head>
+                      <ui-table-head className="px-4 py-3 text-right">Bonus Received</ui-table-head>
                     </ui-table-row>
-                  }
-                </ui-table-body>
-              </ui-table>
-            </ui-scroll-area>
+                  </ui-table-header>
+                  <ui-table-body>
+                    @for (conv of conversions(); track conv.leadId) {
+                      <ui-table-row>
+                        <ui-table-cell className="px-4 py-3 font-medium">{{ conv.leadId }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3">{{ conv.phoneNumber }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3">{{ conv.convertedDate }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right">\${{ conv.purchaseAmount | number }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right text-green-600 font-medium">\${{ conv.bonusReceived | number }}</ui-table-cell>
+                      </ui-table-row>
+                    }
+                  </ui-table-body>
+                </ui-table>
+              </ui-scroll-area>
+            } @else {
+              <div class="rounded-md border py-20">
+                <p class="text-center text-muted-foreground text-sm">No conversions found matching your criteria</p>
+              </div>
+            }
           </ui-card-content>
         </ui-card>
       </div>

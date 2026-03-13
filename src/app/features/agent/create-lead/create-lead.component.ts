@@ -62,7 +62,14 @@ export class CreateLeadComponent {
 
     this.submitting.set(true);
 
-    this.leadService.createLead(this.leadForm.value).subscribe({
+    const formValue = this.leadForm.value;
+    const payload = {
+      interaction_type: formValue.interactionType,
+      customer_name: formValue.customerName,
+      customer_phone: formValue.customerPhone,
+    };
+
+    this.leadService.createLead(payload).subscribe({
       next: () => {
         this.submitting.set(false);
         this.toastService.show('Lead Created', 'The lead has been successfully created.');

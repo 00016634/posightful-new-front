@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
       <app-page-header
         title="All Agents"
         subtitle="View and manage all personnel"
@@ -8,20 +8,20 @@
 
       <!-- Filters -->
       <ui-card>
-        <ui-card-content className="p-4">
+        <ui-card-content className="p-5 !pt-5">
           <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
               <input
                 type="text"
-                class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 placeholder="Search by name, code, or region..."
                 [value]="searchTerm()"
                 (input)="onSearch($event)"
               />
             </div>
-            <div class="w-full md:w-40">
+            <div class="w-full md:w-44">
               <select
-                class="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
+                class="flex h-10 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
                 [value]="roleFilter()"
                 (change)="onRoleFilter($event)"
               >
@@ -30,9 +30,9 @@
                 <option value="supervisor">Supervisor</option>
               </select>
             </div>
-            <div class="w-full md:w-40">
+            <div class="w-full md:w-44">
               <select
-                class="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
+                class="flex h-10 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
                 [value]="regionFilter()"
                 (change)="onRegionFilter($event)"
               >
@@ -42,9 +42,9 @@
                 }
               </select>
             </div>
-            <div class="w-full md:w-40">
+            <div class="w-full md:w-44">
               <select
-                class="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
+                class="flex h-10 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
                 [value]="statusFilter()"
                 (change)="onStatusFilter($event)"
               >
@@ -59,72 +59,69 @@
 
       <!-- Table -->
       <ui-card>
-        <ui-card-content>
-          <ui-table>
-            <ui-table-header>
-              <ui-table-row>
-                <ui-table-head>Person</ui-table-head>
-                <ui-table-head>Role</ui-table-head>
-                <ui-table-head>Region</ui-table-head>
-                <ui-table-head>Supervisor</ui-table-head>
-                <ui-table-head className="text-center">Leads</ui-table-head>
-                <ui-table-head className="text-center">Conversions</ui-table-head>
-                <ui-table-head className="text-right">Revenue</ui-table-head>
-                <ui-table-head className="text-center">Status</ui-table-head>
-                <ui-table-head className="text-center">Actions</ui-table-head>
-              </ui-table-row>
-            </ui-table-header>
-            <ui-table-body>
-              @for (person of filteredPersonnel(); track person.id) {
-                <ui-table-row className="cursor-pointer" (click)="goToDetail(person)">
-                  <ui-table-cell>
-                    <div class="flex items-center gap-3">
-                      <ui-avatar
-                        [src]="person.profileImage"
-                        [alt]="person.fullName"
-                        [fallback]="getInitials(person.fullName)"
-                        size="sm"
-                      />
-                      <div>
-                        <div class="font-medium">{{ person.fullName }}</div>
-                        <div class="text-xs text-muted-foreground">{{ person.agentCode }}</div>
-                      </div>
-                    </div>
-                  </ui-table-cell>
-                  <ui-table-cell>
-                    <ui-badge [variant]="person.role === 'supervisor' ? 'default' : 'secondary'">
-                      {{ person.role === 'supervisor' ? 'Supervisor' : 'Agent' }}
-                    </ui-badge>
-                  </ui-table-cell>
-                  <ui-table-cell>{{ person.region }}</ui-table-cell>
-                  <ui-table-cell>{{ person.supervisor }}</ui-table-cell>
-                  <ui-table-cell className="text-center">{{ person.leads }}</ui-table-cell>
-                  <ui-table-cell className="text-center">{{ person.conversions }}</ui-table-cell>
-                  <ui-table-cell className="text-right font-medium">{{ formatCurrency(person.revenue) }}</ui-table-cell>
-                  <ui-table-cell className="text-center">
-                    <ui-badge [variant]="person.status === 'active' ? 'default' : 'destructive'" [className]="person.status === 'active' ? 'bg-green-600' : ''">
-                      {{ person.status }}
-                    </ui-badge>
-                  </ui-table-cell>
-                  <ui-table-cell className="text-center">
-                    <button
-                      class="text-sm text-primary hover:underline"
-                      (click)="goToDetail(person); $event.stopPropagation()"
-                    >
-                      View
-                    </button>
-                  </ui-table-cell>
+        <ui-card-content [className]="filteredPersonnel().length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+          @if (filteredPersonnel().length > 0) {
+            <ui-table>
+              <ui-table-header>
+                <ui-table-row>
+                  <ui-table-head className="px-4 py-3">Person</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Role</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Region</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Supervisor</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-center">Leads</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-center">Conversions</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-right">Revenue</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-center">Status</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-center">Actions</ui-table-head>
                 </ui-table-row>
-              }
-              @if (filteredPersonnel().length === 0) {
-                <tr>
-                  <td colspan="9" class="text-center py-12 text-muted-foreground">
-                    No personnel found matching your criteria
-                  </td>
-                </tr>
-              }
-            </ui-table-body>
-          </ui-table>
+              </ui-table-header>
+              <ui-table-body>
+                @for (person of filteredPersonnel(); track person.id) {
+                  <ui-table-row className="cursor-pointer" (click)="goToDetail(person)">
+                    <ui-table-cell className="px-4 py-3">
+                      <div class="flex items-center gap-3">
+                        <ui-avatar
+                          [src]="person.profileImage"
+                          [alt]="person.fullName"
+                          [fallback]="getInitials(person.fullName)"
+                          size="sm"
+                        />
+                        <div>
+                          <div class="font-medium">{{ person.fullName }}</div>
+                          <div class="text-xs text-muted-foreground mt-0.5">{{ person.agentCode }}</div>
+                        </div>
+                      </div>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">
+                      <ui-badge [variant]="person.role === 'supervisor' ? 'default' : 'secondary'">
+                        {{ person.role === 'supervisor' ? 'Supervisor' : 'Agent' }}
+                      </ui-badge>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">{{ person.region }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">{{ person.supervisor }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-center">{{ person.leads }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-center">{{ person.conversions }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-right font-medium">{{ formatCurrency(person.revenue) }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-center">
+                      <ui-badge [variant]="person.status === 'active' ? 'default' : 'destructive'" [className]="person.status === 'active' ? 'bg-green-600' : ''">
+                        {{ person.status }}
+                      </ui-badge>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-center">
+                      <button
+                        class="text-sm text-primary hover:underline"
+                        (click)="goToDetail(person); $event.stopPropagation()"
+                      >
+                        View
+                      </button>
+                    </ui-table-cell>
+                  </ui-table-row>
+                }
+              </ui-table-body>
+            </ui-table>
+          } @else {
+            <p class="text-center text-muted-foreground text-sm">No personnel found matching your criteria</p>
+          }
         </ui-card-content>
       </ui-card>
       </div>

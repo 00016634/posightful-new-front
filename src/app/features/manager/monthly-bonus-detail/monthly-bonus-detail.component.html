@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
         <!-- Header -->
         <div class="flex items-center gap-4">
           <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/bonus-management')">
@@ -43,37 +43,41 @@
           <ui-card-header>
             <ui-card-title>Agent Bonus Breakdown</ui-card-title>
           </ui-card-header>
-          <ui-card-content>
-            <ui-table>
-              <ui-table-header>
-                <ui-table-row>
-                  <ui-table-head>Agent</ui-table-head>
-                  <ui-table-head className="text-right">Conversions</ui-table-head>
-                  <ui-table-head className="text-right">Total Sales</ui-table-head>
-                  <ui-table-head className="text-right">Avg Sale</ui-table-head>
-                  <ui-table-head className="text-right">Bonus Amount</ui-table-head>
-                </ui-table-row>
-              </ui-table-header>
-              <ui-table-body>
-                @for (agent of agents(); track agent.agentCode) {
+          <ui-card-content [className]="agents().length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+            @if (agents().length > 0) {
+              <ui-table>
+                <ui-table-header>
                   <ui-table-row>
-                    <ui-table-cell>
-                      <div class="flex items-center gap-3">
-                        <ui-avatar [fallback]="getInitials(agent.agentName)" />
-                        <div>
-                          <p class="font-medium">{{ agent.agentName }}</p>
-                          <p class="text-sm text-muted-foreground">{{ agent.agentCode }}</p>
-                        </div>
-                      </div>
-                    </ui-table-cell>
-                    <ui-table-cell className="text-right font-medium">{{ agent.conversions }}</ui-table-cell>
-                    <ui-table-cell className="text-right font-medium">\${{ formatNumber(agent.totalSales) }}</ui-table-cell>
-                    <ui-table-cell className="text-right text-muted-foreground">\${{ formatNumber(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
-                    <ui-table-cell className="text-right font-semibold text-green-600">\${{ formatNumber(agent.bonusAmount) }}</ui-table-cell>
+                    <ui-table-head className="px-4 py-3">Agent</ui-table-head>
+                    <ui-table-head className="px-4 py-3 text-right">Conversions</ui-table-head>
+                    <ui-table-head className="px-4 py-3 text-right">Total Sales</ui-table-head>
+                    <ui-table-head className="px-4 py-3 text-right">Avg Sale</ui-table-head>
+                    <ui-table-head className="px-4 py-3 text-right">Bonus Amount</ui-table-head>
                   </ui-table-row>
-                }
-              </ui-table-body>
-            </ui-table>
+                </ui-table-header>
+                <ui-table-body>
+                  @for (agent of agents(); track agent.agentCode) {
+                    <ui-table-row>
+                      <ui-table-cell className="px-4 py-3">
+                        <div class="flex items-center gap-3">
+                          <ui-avatar [fallback]="getInitials(agent.agentName)" />
+                          <div>
+                            <p class="font-medium">{{ agent.agentName }}</p>
+                            <p class="text-sm text-muted-foreground mt-0.5">{{ agent.agentCode }}</p>
+                          </div>
+                        </div>
+                      </ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right font-medium">{{ agent.conversions }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ formatNumber(agent.totalSales) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right text-muted-foreground">\${{ formatNumber(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">\${{ formatNumber(agent.bonusAmount) }}</ui-table-cell>
+                    </ui-table-row>
+                  }
+                </ui-table-body>
+              </ui-table>
+            } @else {
+              <p class="text-center text-muted-foreground text-sm">No personnel found matching your criteria</p>
+            }
           </ui-card-content>
         </ui-card>
       </div>

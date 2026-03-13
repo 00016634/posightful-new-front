@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
@@ -138,31 +138,35 @@
         <ui-card-header>
           <ui-card-title>Team Performance by Supervisor</ui-card-title>
         </ui-card-header>
-        <ui-card-content>
-          <ui-table>
-            <ui-table-header>
-              <ui-table-row>
-                <ui-table-head>Supervisor</ui-table-head>
-                <ui-table-head>Code</ui-table-head>
-                <ui-table-head className="text-center">Agents</ui-table-head>
-                <ui-table-head className="text-center">Leads</ui-table-head>
-                <ui-table-head className="text-center">Conversions</ui-table-head>
-                <ui-table-head className="text-right">Revenue</ui-table-head>
-              </ui-table-row>
-            </ui-table-header>
-            <ui-table-body>
-              @for (sup of supervisorPerformance(); track sup.code) {
+        <ui-card-content [className]="supervisorPerformance().length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+          @if (supervisorPerformance().length > 0) {
+            <ui-table>
+              <ui-table-header>
                 <ui-table-row>
-                  <ui-table-cell className="font-medium">{{ sup.name }}</ui-table-cell>
-                  <ui-table-cell>{{ sup.code }}</ui-table-cell>
-                  <ui-table-cell className="text-center">{{ sup.agents }}</ui-table-cell>
-                  <ui-table-cell className="text-center">{{ sup.leads }}</ui-table-cell>
-                  <ui-table-cell className="text-center">{{ sup.conversions }}</ui-table-cell>
-                  <ui-table-cell className="text-right font-medium">{{ formatCurrency(sup.revenue) }}</ui-table-cell>
+                  <ui-table-head className="px-4 py-3">Supervisor</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Code</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-center">Agents</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-center">Leads</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-center">Conversions</ui-table-head>
+                  <ui-table-head className="px-4 py-3 text-right">Revenue</ui-table-head>
                 </ui-table-row>
-              }
-            </ui-table-body>
-          </ui-table>
+              </ui-table-header>
+              <ui-table-body>
+                @for (sup of supervisorPerformance(); track sup.code) {
+                  <ui-table-row>
+                    <ui-table-cell className="px-4 py-3 font-medium">{{ sup.name }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">{{ sup.code }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-center">{{ sup.agents }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-center">{{ sup.leads }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-center">{{ sup.conversions }}</ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-right font-medium">{{ formatCurrency(sup.revenue) }}</ui-table-cell>
+                  </ui-table-row>
+                }
+              </ui-table-body>
+            </ui-table>
+          } @else {
+            <p class="text-center text-muted-foreground text-sm">No personnel found matching your criteria</p>
+          }
         </ui-card-content>
       </ui-card>
       </div>

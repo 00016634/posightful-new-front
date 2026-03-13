@@ -1,5 +1,5 @@
 <app-page-layout>
-      <div class="mx-auto max-w-7xl space-y-6">
+      <div class="mx-auto max-w-7xl space-y-8">
         <!-- Header -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
@@ -28,62 +28,59 @@
           <ui-card-header>
             <ui-card-title>Active & Inactive Rules</ui-card-title>
           </ui-card-header>
-          <ui-card-content>
-            <ui-table>
-              <ui-table-header>
-                <ui-table-row>
-                  <ui-table-head>Rule Name</ui-table-head>
-                  <ui-table-head>Dimension</ui-table-head>
-                  <ui-table-head>Condition</ui-table-head>
-                  <ui-table-head>Payout</ui-table-head>
-                  <ui-table-head>Priority</ui-table-head>
-                  <ui-table-head>Status</ui-table-head>
-                  <ui-table-head className="text-right">Actions</ui-table-head>
-                </ui-table-row>
-              </ui-table-header>
-              <ui-table-body>
-                @for (rule of rules(); track rule.id) {
+          <ui-card-content [className]="rules().length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+            @if (rules().length > 0) {
+              <ui-table>
+                <ui-table-header>
                   <ui-table-row>
-                    <ui-table-cell>
-                      <p class="font-medium">{{ rule.name }}</p>
-                    </ui-table-cell>
-                    <ui-table-cell>
-                      <ui-badge variant="outline">{{ rule.dimension }}</ui-badge>
-                    </ui-table-cell>
-                    <ui-table-cell className="text-sm">
-                      <span class="font-medium">{{ rule.operator }}</span>
-                      <span class="text-muted-foreground ml-1">{{ rule.value }}</span>
-                    </ui-table-cell>
-                    <ui-table-cell className="font-medium text-green-600">{{ rule.payoutValue }}</ui-table-cell>
-                    <ui-table-cell>{{ rule.priority }}</ui-table-cell>
-                    <ui-table-cell>
-                      <button (click)="toggleActive(rule.id)">
-                        <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + (rule.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')">
-                          {{ rule.isActive ? 'Active' : 'Inactive' }}
-                        </span>
-                      </button>
-                    </ui-table-cell>
-                    <ui-table-cell className="text-right">
-                      <div class="flex justify-end gap-2">
-                        <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/bonus-management/rules/' + rule.id)">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                        </ui-button>
-                        <ui-button variant="ghost" size="icon" (click)="deleteRule(rule.id)">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                        </ui-button>
-                      </div>
-                    </ui-table-cell>
+                    <ui-table-head className="px-4 py-3">Rule Name</ui-table-head>
+                    <ui-table-head className="px-4 py-3">Dimension</ui-table-head>
+                    <ui-table-head className="px-4 py-3">Condition</ui-table-head>
+                    <ui-table-head className="px-4 py-3">Payout</ui-table-head>
+                    <ui-table-head className="px-4 py-3">Priority</ui-table-head>
+                    <ui-table-head className="px-4 py-3">Status</ui-table-head>
+                    <ui-table-head className="px-4 py-3 text-right">Actions</ui-table-head>
                   </ui-table-row>
-                }
-                @if (rules().length === 0) {
-                  <tr>
-                    <td colspan="7" class="text-center py-12 text-muted-foreground">
-                      No rules configured
-                    </td>
-                  </tr>
-                }
-              </ui-table-body>
-            </ui-table>
+                </ui-table-header>
+                <ui-table-body>
+                  @for (rule of rules(); track rule.id) {
+                    <ui-table-row>
+                      <ui-table-cell className="px-4 py-3">
+                        <p class="font-medium">{{ rule.name }}</p>
+                      </ui-table-cell>
+                      <ui-table-cell className="px-4 py-3">
+                        <ui-badge variant="outline">{{ rule.dimension }}</ui-badge>
+                      </ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-sm">
+                        <span class="font-medium">{{ rule.operator }}</span>
+                        <span class="text-muted-foreground ml-1">{{ rule.value }}</span>
+                      </ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 font-medium text-green-600">{{ rule.payoutValue }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3">{{ rule.priority }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3">
+                        <button (click)="toggleActive(rule.id)">
+                          <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + (rule.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')">
+                            {{ rule.isActive ? 'Active' : 'Inactive' }}
+                          </span>
+                        </button>
+                      </ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right">
+                        <div class="flex justify-end gap-2">
+                          <ui-button variant="ghost" size="icon" (click)="router.navigateByUrl('/manager/bonus-management/rules/' + rule.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                          </ui-button>
+                          <ui-button variant="ghost" size="icon" (click)="deleteRule(rule.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                          </ui-button>
+                        </div>
+                      </ui-table-cell>
+                    </ui-table-row>
+                  }
+                </ui-table-body>
+              </ui-table>
+            } @else {
+              <p class="text-center text-muted-foreground text-sm">No rules found matching your criteria</p>
+            }
           </ui-card-content>
         </ui-card>
       </div>
