@@ -36,7 +36,6 @@ import { ToastService } from '../../../shared/ui/toast.service';
     LabelComponent,
   ],
   templateUrl: './all-leads.component.html',
-
   styleUrl: './all-leads.component.css',
 })
 export class AllLeadsComponent implements OnInit {
@@ -55,7 +54,7 @@ export class AllLeadsComponent implements OnInit {
 
   uniqueAgents = computed(() => {
     const names = this.leads().map(l => l.agentName);
-    return [...new Set(names)];
+    return [...new Set(names)].filter(Boolean);
   });
 
   filteredLeads = computed(() => {
@@ -63,9 +62,9 @@ export class AllLeadsComponent implements OnInit {
     const search = this.searchTerm().toLowerCase();
     if (search) {
       result = result.filter(l =>
-        l.customerName.toLowerCase().includes(search) ||
-        l.customerPhone.includes(search) ||
-        l.id.toLowerCase().includes(search)
+        (l.customerName || '').toLowerCase().includes(search) ||
+        (l.customerPhone || '').includes(search) ||
+        String(l.id).toLowerCase().includes(search)
       );
     }
     if (this.agentFilter()) {
@@ -78,7 +77,21 @@ export class AllLeadsComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.leadService.getLeads().subscribe(data => this.leads.set(data));
+    this.leadService.getLeads().subscribe(data => {
+      const mapped = data.map((l: any) => ({
+        ...l,
+        customerName: l.customer_name || '',
+        customerPhone: l.customer_phone || '',
+        agentName: l.agent_name || '',
+        agentCode: l.agent_code || '',
+        interactionType: l.interaction_type || '',
+        createdDate: l.created_at ? new Date(l.created_at).toLocaleDateString('en-US', {
+          month: 'short', day: 'numeric', year: 'numeric'
+        }) : '',
+        notes: l.notes || '',
+      }));
+      this.leads.set(mapped);
+    });
   }
 
   getStatusClasses(status: string): string {
@@ -86,6 +99,7 @@ export class AllLeadsComponent implements OnInit {
       case 'converted': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'lost': return 'bg-red-100 text-red-800';
+      case 'new': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   }
@@ -113,9 +127,21 @@ export class AllLeadsComponent implements OnInit {
   saveLead() {
     const lead = this.selectedLead();
     if (!lead) return;
-    this.leadService.updateLead(lead.id, this.editForm()).subscribe(() => {
+    const payload: any = {
+      customer_name: this.editForm().customerName,
+      customer_phone: this.editForm().customerPhone,
+    };
+    this.leadService.updateLead(lead.id, payload).subscribe(() => {
       this.leads.update(leads =>
-        leads.map(l => l.id === lead.id ? { ...l, ...this.editForm() } : l)
+        leads.map(l => l.id === lead.id ? {
+          ...l,
+          customerName: this.editForm().customerName,
+          customerPhone: this.editForm().customerPhone,
+          customer_name: this.editForm().customerName,
+          customer_phone: this.editForm().customerPhone,
+          status: this.editForm().status,
+          notes: this.editForm().notes,
+        } : l)
       );
       this.editDialogOpen.set(false);
       this.toastService.show('Lead Updated', 'Lead has been updated successfully.');

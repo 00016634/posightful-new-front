@@ -10,10 +10,6 @@ export const managerRoutes: Routes = [
     loadComponent: () => import('./all-agents/all-agents.component').then(m => m.AllAgentsComponent),
   },
   {
-    path: ':role/:id',
-    loadComponent: () => import('./agent-detail/agent-detail.component').then(m => m.AgentDetailComponent),
-  },
-  {
     path: 'product-funnel',
     loadComponent: () => import('./product-funnel/product-funnel.component').then(m => m.ProductFunnelComponent),
   },
@@ -36,5 +32,9 @@ export const managerRoutes: Routes = [
   {
     path: 'bonus-management/attribution-window',
     loadComponent: () => import('./attribution-window/attribution-window.component').then(m => m.AttributionWindowComponent),
+  },
+  {
+    path: ':role/:id',
+    loadComponent: () => import('./agent-detail/agent-detail.component').then(m => m.AgentDetailComponent),
   },
 ];

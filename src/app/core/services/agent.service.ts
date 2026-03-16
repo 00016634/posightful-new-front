@@ -10,20 +10,29 @@ export class AgentService {
 
   constructor(private http: HttpClient) {}
 
+  private extractResults(response: any): any[] {
+    // Handle both paginated { results: [] } and plain array responses
+    if (Array.isArray(response)) return response;
+    if (response && Array.isArray(response.results)) return response.results;
+    return [];
+  }
+
   getAgents(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/`).pipe(
-      map(agents => agents.filter(a => !a.parent || a.subordinates === undefined))
+    return this.http.get<any>(`${this.apiUrl}/?page_size=500`).pipe(
+      map(res => this.extractResults(res).filter(a => a.parent !== null))
     );
   }
 
   getSupervisors(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/`).pipe(
-      map(agents => agents.filter(a => a.parent === null))
+    return this.http.get<any>(`${this.apiUrl}/?page_size=500`).pipe(
+      map(res => this.extractResults(res).filter(a => a.parent === null))
     );
   }
 
   getAllPersonnel(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/`);
+    return this.http.get<any>(`${this.apiUrl}/?page_size=500`).pipe(
+      map(res => this.extractResults(res))
+    );
   }
 
   getAgentById(id: number): Observable<any> {

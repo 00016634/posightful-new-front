@@ -45,7 +45,12 @@ export class AnalyticsService {
     return this.http.get<any[]>(`${this.apiUrl}/top-agents/`);
   }
 
-  getPerformanceChart(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/performance-chart/`);
+  getPerformanceChart(agentId?: number): Observable<any> {
+    const params = agentId ? `?agent_id=${agentId}` : '';
+    return this.http.get<any>(`${this.apiUrl}/performance-chart/${params}`);
+  }
+
+  getAgentStats(agentId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/agent-stats/${agentId}/`);
   }
 }

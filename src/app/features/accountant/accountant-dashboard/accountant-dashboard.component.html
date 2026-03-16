@@ -84,8 +84,8 @@
                 <ui-button variant="outline" (click)="exportCSV('summary')">Export CSV</ui-button>
               </div>
             </ui-card-header>
-            <ui-card-content [className]="bonusSummary.length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
-              @if (bonusSummary.length > 0) {
+            <ui-card-content [className]="bonusSummary().length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+              @if (bonusSummary().length > 0) {
                 <ui-table>
                   <ui-table-header>
                     <ui-table-row>
@@ -97,7 +97,7 @@
                     </ui-table-row>
                   </ui-table-header>
                   <ui-table-body>
-                    @for (agent of bonusSummary; track agent.agentCode) {
+                    @for (agent of bonusSummary(); track agent.agentCode) {
                       <ui-table-row>
                         <ui-table-cell className="px-4 py-3">
                           <div class="flex items-center gap-3">
@@ -139,8 +139,8 @@
                 <ui-button variant="outline" (click)="exportCSV('details')">Export CSV</ui-button>
               </div>
             </ui-card-header>
-            <ui-card-content [className]="bonusDetails.length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
-              @if (bonusDetails.length > 0) {
+            <ui-card-content [className]="bonusDetails().length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+              @if (bonusDetails().length > 0) {
                 <div class="overflow-x-auto">
                   <ui-table>
                     <ui-table-header>
@@ -156,7 +156,7 @@
                       </ui-table-row>
                     </ui-table-header>
                     <ui-table-body>
-                      @for (d of bonusDetails; track d.id) {
+                      @for (d of bonusDetails(); track d.id) {
                         <ui-table-row>
                           <ui-table-cell className="px-4 py-3">
                             <p class="font-medium text-sm">{{ d.agentName }}</p>

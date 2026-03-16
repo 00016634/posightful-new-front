@@ -14,6 +14,7 @@ import {
   CardContentComponent,
 } from '../../../shared/ui';
 import { AgentService } from '../../../core/services/agent.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
   selector: 'app-all-agents',
@@ -33,11 +34,11 @@ import { AgentService } from '../../../core/services/agent.service';
     CardContentComponent,
   ],
   templateUrl: './all-agents.component.html',
-
   styleUrl: './all-agents.component.css',
 })
 export class AllAgentsComponent implements OnInit {
   private agentService = inject(AgentService);
+  private analyticsService = inject(AnalyticsService);
   private router = inject(Router);
 
   personnel = signal<any[]>([]);
@@ -48,7 +49,7 @@ export class AllAgentsComponent implements OnInit {
 
   regions = computed(() => {
     const allRegions = this.personnel().map(p => p.region);
-    return [...new Set(allRegions)].sort();
+    return [...new Set(allRegions)].filter(Boolean).sort();
   });
 
   filteredPersonnel = computed(() => {
@@ -56,13 +57,13 @@ export class AllAgentsComponent implements OnInit {
     const term = this.searchTerm().toLowerCase();
     if (term) {
       list = list.filter(p =>
-        p.fullName.toLowerCase().includes(term) ||
-        p.agentCode.toLowerCase().includes(term) ||
-        p.region.toLowerCase().includes(term)
+        (p.fullName || '').toLowerCase().includes(term) ||
+        (p.agentCode || '').toLowerCase().includes(term) ||
+        (p.region || '').toLowerCase().includes(term)
       );
     }
     if (this.roleFilter() !== 'all') {
-      list = list.filter(p => p.role === this.roleFilter());
+      list = list.filter(p => (p.role || '').toLowerCase() === this.roleFilter());
     }
     if (this.regionFilter() !== 'all') {
       list = list.filter(p => p.region === this.regionFilter());
@@ -74,7 +75,36 @@ export class AllAgentsComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.agentService.getAllPersonnel().subscribe(data => this.personnel.set(data));
+    this.agentService.getAllPersonnel().subscribe(data => {
+      const mapped = data.map((a: any) => ({
+        id: a.id,
+        fullName: a.user_full_name || '',
+        agentCode: a.agent_code || '',
+        region: a.region_name || '',
+        role: a.role || 'Agent',
+        status: a.status || 'active',
+        leads: 0,
+        conversions: 0,
+        revenue: 0,
+        conversionRate: 0,
+      }));
+      this.personnel.set(mapped);
+
+      // Load stats for each agent
+      for (const person of mapped) {
+        this.analyticsService.getAgentStats(person.id).subscribe(stats => {
+          this.personnel.update(list =>
+            list.map(p => p.id === person.id ? {
+              ...p,
+              leads: stats.totalLeads || 0,
+              conversions: stats.conversions || 0,
+              revenue: stats.totalRevenue || 0,
+              conversionRate: stats.conversionRate || 0,
+            } : p)
+          );
+        });
+      }
+    });
   }
 
   onSearch(event: Event) {
@@ -94,14 +124,16 @@ export class AllAgentsComponent implements OnInit {
   }
 
   goToDetail(person: any) {
-    this.router.navigateByUrl(`/manager/${person.role}/${person.id}`);
+    const role = (person.role || 'agent').toLowerCase();
+    this.router.navigateByUrl(`/manager/${role}/${person.id}`);
   }
 
   getInitials(name: string): string {
+    if (!name) return '?';
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   }
 
   formatCurrency(value: number): string {
-    return '$' + value.toLocaleString();
+    return '$' + (value || 0).toLocaleString();
   }
 }

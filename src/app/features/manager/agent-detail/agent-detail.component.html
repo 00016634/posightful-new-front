@@ -180,7 +180,7 @@
                           </span>
                         </ui-table-cell>
                         <ui-table-cell className="px-4 py-3">{{ lead.amount ? '$' + formatNumber(lead.amount) : '—' }}</ui-table-cell>
-                        <ui-table-cell className="px-4 py-3 text-sm text-muted-foreground">{{ lead.date }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-sm text-muted-foreground">{{ formatDate(lead.date) }}</ui-table-cell>
                       </ui-table-row>
                     }
                   </ui-table-body>

@@ -9,7 +9,8 @@ import {
   TableRowComponent, TableHeadComponent, TableCellComponent,
 } from '../../../shared/ui';
 import { AgentService } from '../../../core/services/agent.service';
-
+import { LeadService } from '../../../core/services/lead.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 @Component({
   selector: 'app-agent-detail',
   standalone: true,
@@ -21,13 +22,14 @@ import { AgentService } from '../../../core/services/agent.service';
     TableRowComponent, TableHeadComponent, TableCellComponent,
   ],
   templateUrl: './agent-detail.component.html',
-
   styleUrl: './agent-detail.component.css',
 })
 export class AgentDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   router = inject(Router);
   private agentService = inject(AgentService);
+  private leadService = inject(LeadService);
+  private analyticsService = inject(AnalyticsService);
 
   isSupervisor = false;
 
@@ -41,56 +43,98 @@ export class AgentDetailComponent implements OnInit {
     totalRevenue: 0, avgTicket: 0, pendingLeads: 0, bonusEarned: 0,
   });
 
-  perfLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-  perfDatasets = [
-    { name: 'Leads', data: [12, 15, 18, 20], color: '#3b82f6' },
-    { name: 'Conversions', data: [4, 6, 7, 8], color: '#10b981' },
-  ];
+  perfLabels: string[] = [];
+  perfDatasets: any[] = [];
 
-  attachedAgents = [
-    { fullName: 'John Smith', agentCode: 'AG-001', leads: 45, conversions: 18, revenue: 27300, conversionRate: 40 },
-    { fullName: 'Sarah Johnson', agentCode: 'AG-003', leads: 38, conversions: 15, revenue: 22750, conversionRate: 39.5 },
-    { fullName: 'Michael Brown', agentCode: 'AG-005', leads: 42, conversions: 16, revenue: 24800, conversionRate: 38.1 },
-    { fullName: 'Emily Davis', agentCode: 'AG-007', leads: 35, conversions: 14, revenue: 21200, conversionRate: 40 },
-  ];
-
-  recentLeads = [
-    { id: 'LD-10023', customer: 'Robert Davis', status: 'converted', amount: 1200, date: 'Jan 18, 2026' },
-    { id: 'LD-10022', customer: 'Emily Wilson', status: 'pending', amount: null, date: 'Jan 18, 2026' },
-    { id: 'LD-10021', customer: 'James Anderson', status: 'lost', amount: null, date: 'Jan 17, 2026' },
-    { id: 'LD-10020', customer: 'Patricia Martinez', status: 'converted', amount: 850, date: 'Jan 17, 2026' },
-  ];
+  attachedAgents: any[] = [];
+  recentLeads: any[] = [];
 
   ngOnInit() {
     const role = this.route.snapshot.paramMap.get('role') || 'agent';
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.isSupervisor = role === 'supervisor';
 
+    // Load agent profile
     this.agentService.getAgentById(id).subscribe(data => {
       if (data) {
         this.agent.set({
-          fullName: data.fullName,
-          agentCode: data.agentCode,
-          role: data.role,
-          supervisor: data.supervisor,
-          region: data.region,
-          phone: data.phone,
-          hireDate: data.hireDate,
+          fullName: data.user_full_name || '',
+          agentCode: data.agent_code || '',
+          role: data.role || (this.isSupervisor ? 'Supervisor' : 'Agent'),
+          supervisor: data.parent_name || '',
+          region: data.region_name || '',
+          phone: data.user_phone || '',
+          hireDate: data.hired_at || '',
         });
-        this.stats.set({
-          totalLeads: data.leads,
-          conversions: data.conversions,
-          conversionRate: data.leads ? Math.round((data.conversions / data.leads) * 100) : 0,
-          totalRevenue: data.revenue,
-          avgTicket: data.conversions ? Math.round(data.revenue / data.conversions) : 0,
-          pendingLeads: Math.round(data.leads * 0.25),
-          bonusEarned: Math.round(data.revenue * 0.1),
-        });
+
+        // If supervisor, load attached agents
+        if (this.isSupervisor) {
+          this.agentService.getAllPersonnel().subscribe(agents => {
+            this.attachedAgents = agents
+              .filter((a: any) => a.parent === id)
+              .map((a: any) => ({
+                fullName: a.user_full_name || '',
+                agentCode: a.agent_code || '',
+                leads: 0,
+                conversions: 0,
+                revenue: 0,
+                conversionRate: 0,
+              }));
+
+            // Load KPI stats for each attached agent
+            for (const agent of this.attachedAgents) {
+              const agentObj = agents.find((a: any) => a.agent_code === agent.agentCode);
+              if (agentObj) {
+                this.analyticsService.getAgentStats(agentObj.id).subscribe(stats => {
+                  agent.leads = stats.totalLeads || 0;
+                  agent.conversions = stats.conversions || 0;
+                  agent.revenue = stats.totalRevenue || 0;
+                  agent.conversionRate = stats.conversionRate || 0;
+                });
+              }
+            }
+          });
+        }
       }
+    });
+
+    // Load real stats from analytics
+    this.analyticsService.getAgentStats(id).subscribe(stats => {
+      this.stats.set({
+        totalLeads: stats.totalLeads || 0,
+        conversions: stats.conversions || 0,
+        conversionRate: stats.conversionRate || 0,
+        totalRevenue: stats.totalRevenue || 0,
+        avgTicket: stats.avgTicket || 0,
+        pendingLeads: stats.pendingLeads || 0,
+        bonusEarned: stats.bonusEarned || 0,
+      });
+    });
+
+    // Load performance chart data filtered by this agent
+    this.analyticsService.getPerformanceChart(id).subscribe(chart => {
+      this.perfLabels = chart.labels || [];
+      this.perfDatasets = chart.datasets || [];
+    });
+
+    // Load recent leads for this agent
+    this.leadService.getLeads().subscribe(leads => {
+      this.recentLeads = leads
+        .filter((l: any) => l.agent === id)
+        .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 10)
+        .map((l: any) => ({
+          id: `LD-${l.id}`,
+          customer: l.customer_name || '',
+          status: l.status || 'new',
+          amount: l.sale_amount || null,
+          date: l.created_at || '',
+        }));
     });
   }
 
   getInitials(name: string): string {
+    if (!name) return '?';
     return name.split(' ').map(n => n[0]).join('');
   }
 
@@ -99,11 +143,18 @@ export class AgentDetailComponent implements OnInit {
       case 'converted': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'lost': return 'bg-red-100 text-red-800';
+      case 'new': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   }
 
   formatNumber(value: number): string {
     return value.toLocaleString();
+  }
+
+  formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 }

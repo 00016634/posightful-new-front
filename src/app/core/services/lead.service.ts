@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -9,8 +9,16 @@ export class LeadService {
 
   constructor(private http: HttpClient) {}
 
+  private extractResults(response: any): any[] {
+    if (Array.isArray(response)) return response;
+    if (response && Array.isArray(response.results)) return response.results;
+    return [];
+  }
+
   getLeads(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/`);
+    return this.http.get<any>(`${this.apiUrl}/?page_size=500`).pipe(
+      map(res => this.extractResults(res))
+    );
   }
 
   getLeadById(id: string | number): Observable<any> {
