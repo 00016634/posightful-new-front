@@ -78,8 +78,8 @@
               <ui-card-title className="text-sm font-medium">Total Revenue</ui-card-title>
             </ui-card-header>
             <ui-card-content>
-              <div class="text-2xl font-semibold">\${{ formatNumber(stats().totalRevenue) }}</div>
-              <p class="text-xs text-muted-foreground mt-1">Avg: \${{ stats().avgTicket }}</p>
+              <div class="text-2xl font-semibold">${{ formatNumber(stats().totalRevenue) }}</div>
+              <p class="text-xs text-muted-foreground mt-1">Avg: ${{ stats().avgTicket }}</p>
             </ui-card-content>
           </ui-card>
 
@@ -88,7 +88,7 @@
               <ui-card-title className="text-sm font-medium">Bonus Earned</ui-card-title>
             </ui-card-header>
             <ui-card-content>
-              <div class="text-2xl font-semibold text-orange-600">\${{ formatNumber(stats().bonusEarned) }}</div>
+              <div class="text-2xl font-semibold text-orange-600">${{ formatNumber(stats().bonusEarned) }}</div>
               <p class="text-xs text-muted-foreground mt-1">This month</p>
             </ui-card-content>
           </ui-card>
@@ -142,7 +142,7 @@
                         <ui-table-cell className="px-4 py-3 text-right font-medium">{{ a.leads }}</ui-table-cell>
                         <ui-table-cell className="px-4 py-3 text-right font-medium text-green-600">{{ a.conversions }}</ui-table-cell>
                         <ui-table-cell className="px-4 py-3 text-right">{{ a.conversionRate }}%</ui-table-cell>
-                        <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ formatNumber(a.revenue) }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-medium">${{ formatNumber(a.revenue) }}</ui-table-cell>
                       </ui-table-row>
                     }
                   </ui-table-body>

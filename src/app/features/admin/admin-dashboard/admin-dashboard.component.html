@@ -6,8 +6,8 @@
             <p class="text-sm text-muted-foreground">Manage users, products, and tenant settings</p>
           </div>
           <div class="flex gap-2">
-            <ui-button (click)="router.navigateByUrl('/admin/users/new')">Add User</ui-button>
-            <ui-button variant="outline" (click)="router.navigateByUrl('/admin/products')">Add Product</ui-button>
+            <ui-button (click)="router.navigateByUrl('/admin/users')">Users</ui-button>
+            <ui-button variant="outline" (click)="router.navigateByUrl('/admin/products')">Products</ui-button>
             <button
               class="inline-flex items-center gap-2 rounded-md text-sm font-medium h-9 px-3 border border-input bg-background shadow-sm hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
               (click)="logout()"

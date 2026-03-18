@@ -50,7 +50,7 @@
                 <ui-card-title className="text-sm font-medium">Total Bonus Payable</ui-card-title>
               </ui-card-header>
               <ui-card-content>
-                <div class="text-2xl font-semibold text-green-600">\${{ fmt(totalBonus()) }}</div>
+                <div class="text-2xl font-semibold text-green-600">${{ fmt(totalBonus()) }}</div>
                 <p class="text-xs text-muted-foreground mt-1">For {{ getMonthLabel() }} {{ selectedYear() }}</p>
               </ui-card-content>
             </ui-card>
@@ -68,7 +68,7 @@
                 <ui-card-title className="text-sm font-medium">Total Sales Volume</ui-card-title>
               </ui-card-header>
               <ui-card-content>
-                <div class="text-2xl font-semibold">\${{ fmt(totalSales()) }}</div>
+                <div class="text-2xl font-semibold">${{ fmt(totalSales()) }}</div>
                 <p class="text-xs text-muted-foreground mt-1">Revenue generated</p>
               </ui-card-content>
             </ui-card>
@@ -109,17 +109,17 @@
                           </div>
                         </ui-table-cell>
                         <ui-table-cell className="px-4 py-3 text-right font-medium">{{ agent.conversions }}</ui-table-cell>
-                        <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ fmt(agent.totalSales) }}</ui-table-cell>
-                        <ui-table-cell className="px-4 py-3 text-right text-muted-foreground">\${{ fmt(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
-                        <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">\${{ fmt(agent.totalBonus) }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-medium">${{ fmt(agent.totalSales) }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right text-muted-foreground">${{ fmt(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">${{ fmt(agent.totalBonus) }}</ui-table-cell>
                       </ui-table-row>
                     }
                     <ui-table-row className="bg-gray-50 font-semibold">
                       <ui-table-cell className="px-4 py-3">TOTAL</ui-table-cell>
                       <ui-table-cell className="px-4 py-3 text-right">{{ totalConversions() }}</ui-table-cell>
-                      <ui-table-cell className="px-4 py-3 text-right">\${{ fmt(totalSales()) }}</ui-table-cell>
-                      <ui-table-cell className="px-4 py-3 text-right">\${{ fmt(Math.round(totalSales() / totalConversions())) }}</ui-table-cell>
-                      <ui-table-cell className="px-4 py-3 text-right text-green-600">\${{ fmt(totalBonus()) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right">${{ fmt(totalSales()) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right">${{ fmt(Math.round(totalSales() / totalConversions())) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right text-green-600">${{ fmt(totalBonus()) }}</ui-table-cell>
                     </ui-table-row>
                   </ui-table-body>
                 </ui-table>
@@ -165,7 +165,7 @@
                           <ui-table-cell className="px-4 py-3 font-mono text-sm">{{ d.leadId }}</ui-table-cell>
                           <ui-table-cell className="px-4 py-3">{{ d.customerName }}</ui-table-cell>
                           <ui-table-cell className="px-4 py-3 text-sm text-muted-foreground">{{ d.saleDate }}</ui-table-cell>
-                          <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ fmt(d.saleAmount) }}</ui-table-cell>
+                          <ui-table-cell className="px-4 py-3 text-right font-medium">${{ fmt(d.saleAmount) }}</ui-table-cell>
                           <ui-table-cell className="px-4 py-3">
                             <p class="font-medium text-sm">{{ d.ruleName }}</p>
                             <p class="text-xs text-muted-foreground mt-0.5">{{ d.ruleType }}</p>
@@ -173,7 +173,7 @@
                           <ui-table-cell className="px-4 py-3">
                             <ui-badge variant="outline" className="font-mono text-xs">{{ d.calculation }}</ui-badge>
                           </ui-table-cell>
-                          <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">\${{ fmt(d.bonusAmount) }}</ui-table-cell>
+                          <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">${{ fmt(d.bonusAmount) }}</ui-table-cell>
                         </ui-table-row>
                       }
                     </ui-table-body>

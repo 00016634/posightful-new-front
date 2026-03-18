@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class UserManagementService {
@@ -10,11 +17,33 @@ export class UserManagementService {
   constructor(private http: HttpClient) {}
 
   getUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.authUrl}/users/`);
+    return this.http.get<PaginatedResponse<any>>(`${this.authUrl}/users/?page_size=200`).pipe(
+      map(response => response.results.map(user => ({
+        id: user.id,
+        fullName: user.full_name || user.username,
+        email: user.email || '',
+        phone: user.phone_number || '',
+        role: user.role || 'agent',
+        region: user.region || '',
+        status: user.is_active ? 'active' : 'inactive',
+        userCode: user.agentCode || user.username,
+        supervisor: user.supervisor || '',
+      })))
+    );
   }
 
   getUserById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.authUrl}/users/${id}/`);
+    return this.http.get<any>(`${this.authUrl}/users/${id}/`).pipe(
+      map(user => ({
+        ...user,
+        fullName: user.full_name || user.username,
+        phone: user.phone_number || '',
+        role: user.role || 'agent',
+        region: user.region || '',
+        status: user.is_active ? 'active' : 'inactive',
+        userCode: user.agentCode || user.username,
+      }))
+    );
   }
 
   createUser(user: any): Observable<any> {

@@ -10,7 +10,12 @@ export const authGuard: CanActivateFn = (route, state) => {
     // Check for role-based access if required
     const requiredRole = route.data['role'];
     if (requiredRole) {
-      const hasRole = authService.hasRole(requiredRole);
+      // Some roles share a route (e.g. ACCOUNTANT and FINANCE both use /accountant)
+      const roleAliases: Record<string, string[]> = {
+        'ACCOUNTANT': ['ACCOUNTANT', 'FINANCE'],
+      };
+      const acceptedRoles = roleAliases[requiredRole] || [requiredRole];
+      const hasRole = acceptedRoles.some(r => authService.hasRole(r));
       if (!hasRole) {
         // Redirect to their own dashboard or home
         const dashPath = getRoleDashboardPath(authService);

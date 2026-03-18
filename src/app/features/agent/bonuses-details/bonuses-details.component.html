@@ -24,11 +24,11 @@
               </div>
               <div class="space-y-2">
                 <p class="text-sm text-muted-foreground">Total Purchases</p>
-                <p class="text-2xl font-semibold">\${{ totalPurchases() | number }}</p>
+                <p class="text-2xl font-semibold">${{ totalPurchases() | number }}</p>
               </div>
               <div class="space-y-2">
                 <p class="text-sm text-muted-foreground">Total Bonuses</p>
-                <p class="text-2xl font-semibold text-green-600">\${{ totalBonuses() | number }}</p>
+                <p class="text-2xl font-semibold text-green-600">${{ totalBonuses() | number }}</p>
               </div>
             </div>
 
@@ -51,8 +51,8 @@
                         <ui-table-cell className="px-4 py-3 font-medium">{{ conv.leadId }}</ui-table-cell>
                         <ui-table-cell className="px-4 py-3">{{ conv.phoneNumber }}</ui-table-cell>
                         <ui-table-cell className="px-4 py-3">{{ conv.convertedDate }}</ui-table-cell>
-                        <ui-table-cell className="px-4 py-3 text-right">\${{ conv.purchaseAmount | number }}</ui-table-cell>
-                        <ui-table-cell className="px-4 py-3 text-right text-green-600 font-medium">\${{ conv.bonusReceived | number }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right">${{ conv.purchaseAmount | number }}</ui-table-cell>
+                        <ui-table-cell className="px-4 py-3 text-right text-green-600 font-medium">${{ conv.bonusReceived | number }}</ui-table-cell>
                       </ui-table-row>
                     }
                   </ui-table-body>

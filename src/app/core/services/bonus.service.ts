@@ -29,6 +29,10 @@ export class BonusService {
     return this.http.get<any[]>(`${this.apiUrl}/monthly/${month}/`);
   }
 
+  getMonthlyAudit(month: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/monthly/${month}/audit/`);
+  }
+
   getAttributionPolicy(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/policies/?page_size=500`).pipe(
       map(res => {

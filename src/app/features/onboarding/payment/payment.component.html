@@ -128,7 +128,7 @@
                         </svg>
                         Processing...
                       } @else {
-                        Complete Purchase - \${{ planPrice() }}/month
+                        Complete Purchase - ${{ planPrice() }}/month
                       }
                     </ui-button>
                     <p class="text-xs text-center text-gray-600 mt-2">
@@ -155,7 +155,7 @@
                 <div class="border-t pt-4 space-y-2">
                   <div class="flex justify-between text-sm">
                     <span>Subtotal</span>
-                    <span>\${{ planPrice() }}</span>
+                    <span>${{ planPrice() }}</span>
                   </div>
                   <div class="flex justify-between text-sm text-gray-600">
                     <span>Tax (0%)</span>
@@ -163,7 +163,7 @@
                   </div>
                   <div class="border-t pt-2 flex justify-between font-semibold">
                     <span>Total due today</span>
-                    <span class="text-lg">\${{ planPrice() }}</span>
+                    <span class="text-lg">${{ planPrice() }}</span>
                   </div>
                 </div>
 

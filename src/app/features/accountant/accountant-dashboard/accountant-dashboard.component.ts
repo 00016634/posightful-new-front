@@ -54,6 +54,7 @@ export class AccountantDashboardComponent implements OnInit {
 
   generate() {
     const month = `${this.selectedYear()}-${this.selectedMonth()}`;
+    // Fetch summary (aggregated per agent)
     this.bonusService.getMonthlyDetail(month).subscribe(data => {
       this.bonusSummary.set(data.map((d: any) => ({
         agentName: d.agentName || '',
@@ -62,18 +63,21 @@ export class AccountantDashboardComponent implements OnInit {
         conversions: d.conversions || 0,
         totalSales: d.totalSales || 0,
       })));
-      this.bonusDetails.set(data.map((d: any, i: number) => ({
-        id: String(i + 1),
+    });
+    // Fetch audit trail (per-sale detail with lead, customer, rule)
+    this.bonusService.getMonthlyAudit(month).subscribe(data => {
+      this.bonusDetails.set(data.map((d: any) => ({
+        id: String(d.id || ''),
         agentName: d.agentName || '',
         agentCode: d.agentCode || '',
-        leadId: '-',
-        customerName: '-',
-        saleAmount: d.totalSales || 0,
-        saleDate: `${this.getMonthLabel()} ${this.selectedYear()}`,
-        ruleName: 'Aggregated',
-        ruleType: 'Monthly total',
+        leadId: d.leadId || '-',
+        customerName: d.customerName || '-',
+        saleAmount: d.saleAmount || 0,
+        saleDate: d.saleDate || '-',
+        ruleName: d.ruleName || '-',
+        ruleType: d.ruleType || '-',
         bonusAmount: d.bonusAmount || 0,
-        calculation: `${d.conversions || 0} conversions`,
+        calculation: d.calculation || '-',
       })));
       this.showData.set(true);
       this.toastService.show('Reports Generated', 'Bonus reports generated successfully');

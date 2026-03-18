@@ -28,11 +28,11 @@
               </div>
               <div>
                 <p class="text-sm text-muted-foreground">Total Sales</p>
-                <p class="text-2xl font-semibold">\${{ formatNumber(totalSales()) }}</p>
+                <p class="text-2xl font-semibold">${{ formatNumber(totalSales()) }}</p>
               </div>
               <div>
                 <p class="text-sm text-muted-foreground">Total Bonuses</p>
-                <p class="text-2xl font-semibold text-green-600">\${{ formatNumber(totalBonuses()) }}</p>
+                <p class="text-2xl font-semibold text-green-600">${{ formatNumber(totalBonuses()) }}</p>
               </div>
             </div>
           </ui-card-content>
@@ -68,9 +68,9 @@
                         </div>
                       </ui-table-cell>
                       <ui-table-cell className="px-4 py-3 text-right font-medium">{{ agent.conversions }}</ui-table-cell>
-                      <ui-table-cell className="px-4 py-3 text-right font-medium">\${{ formatNumber(agent.totalSales) }}</ui-table-cell>
-                      <ui-table-cell className="px-4 py-3 text-right text-muted-foreground">\${{ formatNumber(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
-                      <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">\${{ formatNumber(agent.bonusAmount) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right font-medium">${{ formatNumber(agent.totalSales) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right text-muted-foreground">${{ formatNumber(Math.round(agent.totalSales / agent.conversions)) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 text-right font-semibold text-green-600">${{ formatNumber(agent.bonusAmount) }}</ui-table-cell>
                     </ui-table-row>
                   }
                 </ui-table-body>
