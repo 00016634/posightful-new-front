@@ -34,7 +34,7 @@
             title="Total Revenue"
             [value]="metrics()!.totalRevenue.value"
             [trend]="metrics()!.totalRevenue.trend"
-            [trendUp]="true"
+            [trendUp]="metrics()!.totalRevenue.trendUp"
           />
           <app-analytics-card
             title="Conversion Rate"
