@@ -35,15 +35,46 @@ export class BonusRulesComponent implements OnInit {
     this.bonusService.getBonusRules().subscribe(data => this.rules.set(data));
   }
 
-  toggleActive(ruleId: number) {
-    this.rules.update(rules =>
-      rules.map(r => r.id === ruleId ? { ...r, isActive: !r.isActive } : r)
-    );
-    this.toastService.show('Status Updated', 'Rule status updated');
+  toggleActive(rule: any) {
+    const newStatus = !rule.is_active;
+    this.bonusService.updateRule(rule.id, { is_active: newStatus }).subscribe({
+      next: () => {
+        this.rules.update(rules =>
+          rules.map(r => r.id === rule.id ? { ...r, is_active: newStatus } : r)
+        );
+        this.toastService.show('Status Updated', `Rule ${newStatus ? 'activated' : 'deactivated'}`);
+      },
+      error: () => this.toastService.show('Error', 'Failed to update rule status', 'destructive'),
+    });
   }
 
   deleteRule(ruleId: number) {
-    this.rules.update(rules => rules.filter(r => r.id !== ruleId));
-    this.toastService.show('Rule Deleted', 'Rule deleted successfully');
+    this.bonusService.deleteRule(ruleId).subscribe({
+      next: () => {
+        this.rules.update(rules => rules.filter(r => r.id !== ruleId));
+        this.toastService.show('Rule Deleted', 'Rule deleted successfully');
+      },
+      error: () => this.toastService.show('Error', 'Failed to delete rule', 'destructive'),
+    });
+  }
+
+  formatPayout(rule: any): string {
+    if (rule.amount_type === 'percent_of_sale') {
+      const cap = rule.cap_amount ? ` (cap $${rule.cap_amount})` : '';
+      return `${rule.amount_value}%${cap}`;
+    }
+    return `$${rule.amount_value}`;
+  }
+
+  formatCondition(rule: any): string {
+    if (rule.rule_dimension === 'SELL_AMOUNT') {
+      return rule.operator === 'BETWEEN'
+        ? `${rule.num_from} – ${rule.num_to}`
+        : `${rule.num_from ?? ''}`;
+    }
+    if (rule.rule_dimension === 'POTENTIAL_PRODUCT') {
+      return rule.text_values || rule.text_value || '';
+    }
+    return rule.num_from ?? rule.text_value ?? '';
   }
 }

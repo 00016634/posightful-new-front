@@ -42,8 +42,20 @@ export class BonusService {
     );
   }
 
+  getBonusRule(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/rules/${id}/`);
+  }
+
+  createRule(data: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/rules/`, data);
+  }
+
   updateRule(id: number, data: any): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/rules/${id}/`, data);
+  }
+
+  deleteRule(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/rules/${id}/`);
   }
 
   updateAttributionPolicy(data: any): Observable<any> {

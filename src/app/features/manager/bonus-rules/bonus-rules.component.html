@@ -46,21 +46,21 @@
                   @for (rule of rules(); track rule.id) {
                     <ui-table-row>
                       <ui-table-cell className="px-4 py-3">
-                        <p class="font-medium">{{ rule.name }}</p>
+                        <p class="font-medium">{{ rule.name || 'Rule #' + rule.id }}</p>
                       </ui-table-cell>
                       <ui-table-cell className="px-4 py-3">
-                        <ui-badge variant="outline">{{ rule.dimension }}</ui-badge>
+                        <ui-badge variant="outline">{{ rule.rule_dimension }}</ui-badge>
                       </ui-table-cell>
                       <ui-table-cell className="px-4 py-3 text-sm">
                         <span class="font-medium">{{ rule.operator }}</span>
-                        <span class="text-muted-foreground ml-1">{{ rule.value }}</span>
+                        <span class="text-muted-foreground ml-1">{{ formatCondition(rule) }}</span>
                       </ui-table-cell>
-                      <ui-table-cell className="px-4 py-3 font-medium text-green-600">{{ rule.payoutValue }}</ui-table-cell>
-                      <ui-table-cell className="px-4 py-3">{{ rule.priority }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3 font-medium text-green-600">{{ formatPayout(rule) }}</ui-table-cell>
+                      <ui-table-cell className="px-4 py-3">—</ui-table-cell>
                       <ui-table-cell className="px-4 py-3">
-                        <button (click)="toggleActive(rule.id)">
-                          <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + (rule.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')">
-                            {{ rule.isActive ? 'Active' : 'Inactive' }}
+                        <button (click)="toggleActive(rule)">
+                          <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + (rule.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')">
+                            {{ rule.is_active ? 'Active' : 'Inactive' }}
                           </span>
                         </button>
                       </ui-table-cell>
