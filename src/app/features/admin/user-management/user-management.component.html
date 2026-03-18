@@ -19,11 +19,11 @@
             <div class="grid gap-4 md:grid-cols-3">
               <div class="space-y-2">
                 <ui-label>Search</ui-label>
-                <input type="text" class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" placeholder="Search by name, email..." [(ngModel)]="searchTerm" />
+                <input type="text" class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" placeholder="Search by name, email..." [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
               </div>
               <div class="space-y-2">
                 <ui-label>Role</ui-label>
-                <select class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" [(ngModel)]="filterRole">
+                <select class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" [value]="filterRole()" (change)="filterRole.set($any($event.target).value)">
                   <option value="all">All Roles</option>
                   <option value="agent">Agent</option>
                   <option value="supervisor">Supervisor</option>
@@ -34,7 +34,7 @@
               </div>
               <div class="space-y-2">
                 <ui-label>Status</ui-label>
-                <select class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" [(ngModel)]="filterStatus">
+                <select class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" [value]="filterStatus()" (change)="filterStatus.set($any($event.target).value)">
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
