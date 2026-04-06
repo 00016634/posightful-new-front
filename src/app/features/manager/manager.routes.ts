@@ -34,6 +34,10 @@ export const managerRoutes: Routes = [
     loadComponent: () => import('./attribution-window/attribution-window.component').then(m => m.AttributionWindowComponent),
   },
   {
+    path: 'conversation-logs',
+    loadComponent: () => import('./conversation-logs/conversation-logs.component').then(m => m.ManagerConversationLogsComponent),
+  },
+  {
     path: ':role/:id',
     loadComponent: () => import('./agent-detail/agent-detail.component').then(m => m.AgentDetailComponent),
   },

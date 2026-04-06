@@ -80,6 +80,58 @@
                 </ui-textarea>
               </div>
 
+              <!-- Conversation Log (Optional) -->
+              @if (leadForm.get('interactionType')?.value) {
+                <div class="border-t pt-5">
+                  <div class="flex items-center gap-3 mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                        [checked]="includeConversation()"
+                        (change)="toggleConversation()"
+                      />
+                      <span class="text-sm font-medium">Include Conversation Log</span>
+                    </label>
+                    <span class="text-xs text-muted-foreground">(optional — triggers AI analysis)</span>
+                  </div>
+
+                  @if (includeConversation()) {
+                    <div class="space-y-4 rounded-lg border border-input p-4 bg-muted/30">
+                      @if (isAudioChannel()) {
+                        <!-- Audio upload for phone/in_person -->
+                        <div class="space-y-2">
+                          <ui-label>Audio Recording</ui-label>
+                          <input
+                            type="file"
+                            accept="audio/*"
+                            class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium cursor-pointer"
+                            (change)="onConvAudioFileChange($event)"
+                          />
+                          @if (convAudioFileName()) {
+                            <p class="text-xs text-muted-foreground">Selected: {{ convAudioFileName() }}</p>
+                          } @else {
+                            <p class="text-xs text-muted-foreground">Upload the recorded conversation audio file (.mp3, .wav, .m4a, etc.)</p>
+                          }
+                        </div>
+                      } @else {
+                        <!-- Transcript for email/online_chat -->
+                        <div class="space-y-2">
+                          <ui-label>Transcript / Conversation Log</ui-label>
+                          <textarea
+                            class="flex min-h-[100px] w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            rows="5"
+                            placeholder="Paste the conversation transcript here..."
+                            [value]="convTranscript()"
+                            (input)="onConvTranscriptChange($event)"
+                          ></textarea>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+
               <div class="flex justify-end gap-3">
                 <ui-button variant="outline" type="button" (click)="cancel()">
                   Cancel

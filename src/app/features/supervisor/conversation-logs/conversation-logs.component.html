@@ -1,0 +1,191 @@
+<app-page-layout>
+  <div class="mx-auto max-w-7xl space-y-8">
+    <app-page-header title="Conversation Logs" subtitle="Review team conversation analyses" backRoute="/supervisor">
+    </app-page-header>
+
+    <!-- Filters -->
+    <ui-card>
+      <ui-card-content className="p-5 !pt-5">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1">
+            <input
+              type="text"
+              placeholder="Search by agent, customer, or topic..."
+              class="flex h-10 w-full rounded-md border border-input bg-input-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              [value]="searchTerm()"
+              (input)="searchTerm.set(asInputValue($event))"
+            />
+          </div>
+          <div class="w-full md:w-40">
+            <ui-select [value]="sentimentFilter()" (change)="sentimentFilter.set(asSelectValue($event))">
+              <option value="">All Sentiments</option>
+              <option value="very_positive">Very Positive</option>
+              <option value="positive">Positive</option>
+              <option value="neutral">Neutral</option>
+              <option value="negative">Negative</option>
+              <option value="very_negative">Very Negative</option>
+            </ui-select>
+          </div>
+          <div class="w-full md:w-40">
+            <ui-select [value]="channelFilter()" (change)="channelFilter.set(asSelectValue($event))">
+              <option value="">All Channels</option>
+              <option value="email">Email</option>
+              <option value="online_chat">Online Chat</option>
+              <option value="phone">Phone</option>
+              <option value="in_person">In Person</option>
+            </ui-select>
+          </div>
+          <div class="w-full md:w-36">
+            <ui-select [value]="ratingFilter()" (change)="ratingFilter.set(asSelectValue($event))">
+              <option value="">All Ratings</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="2">2 Stars</option>
+              <option value="1">1 Star</option>
+            </ui-select>
+          </div>
+        </div>
+      </ui-card-content>
+    </ui-card>
+
+    <!-- Conversations Table -->
+    <ui-card>
+      <ui-card-content [className]="filteredConversations().length > 0 ? 'p-0 !pt-0' : 'py-20 !pt-20'">
+        @if (filteredConversations().length > 0) {
+          <div class="relative w-full overflow-auto">
+            <ui-table>
+              <ui-table-header>
+                <ui-table-row>
+                  <ui-table-head className="px-4 py-3">Agent</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Customer</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Channel</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Rating</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Sentiment</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Topic</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Status</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Date</ui-table-head>
+                  <ui-table-head className="px-4 py-3">Actions</ui-table-head>
+                </ui-table-row>
+              </ui-table-header>
+              <ui-table-body>
+                @for (conv of filteredConversations(); track conv.id) {
+                  <ui-table-row>
+                    <ui-table-cell className="px-4 py-3">
+                      <div>
+                        <p class="text-sm font-medium">{{ conv.agent_name || '\u2014' }}</p>
+                        <p class="text-xs text-muted-foreground mt-0.5">{{ conv.agent_code || '' }}</p>
+                      </div>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">
+                      <div>
+                        <p class="text-sm font-medium">{{ conv.lead_customer_name }}</p>
+                        <p class="text-xs text-muted-foreground mt-0.5">{{ conv.lead_customer_phone }}</p>
+                      </div>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">
+                      <span class="capitalize text-sm">{{ formatChannel(conv.channel) }}</span>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">
+                      <span class="text-amber-500 text-sm">{{ renderStars(conv.rating) }}</span>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">
+                      @if (conv.customer_sentiment) {
+                        <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold capitalize ' + getSentimentClasses(conv.customer_sentiment)">
+                          {{ formatSentiment(conv.customer_sentiment) }}
+                        </span>
+                      } @else {
+                        <span class="text-muted-foreground text-sm">&mdash;</span>
+                      }
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 max-w-[200px] truncate">
+                      {{ conv.conversation_topic || '\u2014' }}
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">
+                      <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + getAnalysisStatusClasses(conv.analysis_status)">
+                        {{ conv.analysis_status | titlecase }}
+                      </span>
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3 text-sm">
+                      {{ formatDate(conv.created_at) }}
+                    </ui-table-cell>
+                    <ui-table-cell className="px-4 py-3">
+                      <button
+                        class="inline-flex items-center justify-center rounded-md text-sm font-medium h-8 px-3 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+                        (click)="viewConversation(conv)"
+                      >
+                        View
+                      </button>
+                    </ui-table-cell>
+                  </ui-table-row>
+                }
+              </ui-table-body>
+            </ui-table>
+          </div>
+        } @else {
+          <p class="text-center text-muted-foreground text-sm">No conversation logs found matching your criteria</p>
+        }
+      </ui-card-content>
+    </ui-card>
+  </div>
+
+  <!-- View Dialog -->
+  <ui-dialog [open]="viewDialogOpen()" (openChange)="viewDialogOpen.set($event)">
+    <ui-dialog-header>
+      <ui-dialog-title>Conversation Details</ui-dialog-title>
+    </ui-dialog-header>
+    @if (selectedConversation()) {
+      <div class="grid gap-4 py-4 max-h-[70vh] overflow-y-auto">
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <span class="text-muted-foreground">Agent:</span>
+          <span class="font-medium">{{ selectedConversation()!.agent_name || '\u2014' }}</span>
+          <span class="text-muted-foreground">Customer:</span>
+          <span class="font-medium">{{ selectedConversation()!.lead_customer_name }}</span>
+          <span class="text-muted-foreground">Phone:</span>
+          <span class="font-medium">{{ selectedConversation()!.lead_customer_phone }}</span>
+          <span class="text-muted-foreground">Channel:</span>
+          <span class="font-medium capitalize">{{ formatChannel(selectedConversation()!.channel) }}</span>
+          <span class="text-muted-foreground">Date:</span>
+          <span class="font-medium">{{ formatDate(selectedConversation()!.created_at) }}</span>
+          <span class="text-muted-foreground">Analysis Status:</span>
+          <span>
+            <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ' + getAnalysisStatusClasses(selectedConversation()!.analysis_status)">
+              {{ selectedConversation()!.analysis_status | titlecase }}
+            </span>
+          </span>
+        </div>
+
+        @if (selectedConversation()!.analysis_status === 'completed') {
+          <div class="border-t pt-4">
+            <h4 class="text-sm font-semibold mb-3">AI Analysis Results</h4>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <span class="text-muted-foreground">Rating:</span>
+              <span class="font-medium text-amber-500">{{ renderStars(selectedConversation()!.rating) }}</span>
+              <span class="text-muted-foreground">Topic:</span>
+              <span class="font-medium">{{ selectedConversation()!.conversation_topic || '\u2014' }}</span>
+              <span class="text-muted-foreground">Sentiment:</span>
+              <span>
+                <span [class]="'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold capitalize ' + getSentimentClasses(selectedConversation()!.customer_sentiment)">
+                  {{ formatSentiment(selectedConversation()!.customer_sentiment) }}
+                </span>
+              </span>
+              <span class="text-muted-foreground">Summary:</span>
+              <span class="font-medium">{{ selectedConversation()!.short_description || '\u2014' }}</span>
+              <span class="text-muted-foreground">Outcome:</span>
+              <span class="font-medium">{{ selectedConversation()!.conversation_outcome || '\u2014' }}</span>
+            </div>
+          </div>
+        }
+
+        @if (selectedConversation()!.raw_transcript) {
+          <div class="border-t pt-4">
+            <h4 class="text-sm font-semibold mb-3">Transcript</h4>
+            <div class="rounded-md bg-muted p-3 text-sm whitespace-pre-wrap max-h-[200px] overflow-y-auto">
+              {{ selectedConversation()!.raw_transcript }}
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </ui-dialog>
+</app-page-layout>

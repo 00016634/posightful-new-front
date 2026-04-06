@@ -13,4 +13,8 @@ export const supervisorRoutes: Routes = [
     path: 'person-info',
     loadComponent: () => import('./supervisor-person-info/supervisor-person-info.component').then(m => m.SupervisorPersonInfoComponent),
   },
+  {
+    path: 'conversation-logs',
+    loadComponent: () => import('./conversation-logs/conversation-logs.component').then(m => m.ConversationLogsComponent),
+  },
 ];
